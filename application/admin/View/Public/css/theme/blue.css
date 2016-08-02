@@ -1,0 +1,74 @@
+.nav-tabs.nav>li>a {
+    padding: 8px 25px;
+    margin-right: 0;
+}
+.nav-tabs.nav>li>a:hover,
+.nav-tabs.nav>li.active>a {
+    border-top: 3px solid #3EA9F5;
+    padding-top: 6px;
+}
+
+
+/* 主导航 */
+.main-nav {
+    color: #fff;
+    margin-bottom: 0;
+    background-color: #3fa9f5;
+    border-color: #3fa9f5;
+    border-width: 0;
+}
+.main-nav .navbar-header .navbar-brand span {
+    color: #fff !important;
+}
+.main-nav .navbar-nav>li>a,
+.main-nav .navbar-toggle {
+    border-color: #fff;
+    color: #fff;
+}
+.main-nav .navbar-toggle:focus,
+.main-nav .navbar-toggle:hover{
+    background-color: #3fa9f5;
+}
+.main-nav .navbar-collapse {
+    border-color: #ccc;
+}
+.main-nav .navbar-nav>li>a:hover,
+.main-nav .navbar-nav>li.active>a,
+.main-nav .navbar-nav>li.active>a:focus,
+.main-nav .navbar-nav>li.active>a:hover,
+.main-nav .navbar-nav>li.open>a,
+.main-nav .navbar-nav>li.open>a:focus,
+.main-nav .navbar-nav>li.open>a:hover{
+    background-color: #fff;
+    border-color: #fff;
+    color: #333;
+}
+@media (min-width: 768px) {
+    .main-nav .nav>li>a {
+        padding: 15px 15px 16px 15px;
+    }
+}
+@media (max-width: 768px) {
+    .main-nav .navbar-nav .open .dropdown-menu>li>a {
+        background-color: #3fa9f5;
+        border-color: #fff;
+        color: #fff;
+    }
+    .main-nav .navbar-nav .open .dropdown-menu>li>a:hover  {
+        background-color: #fff;
+        border-color: #fff;
+        color: #333;
+    }
+}
+
+
+/* 左侧导航 */
+#sidebar .navside.navside-default .navside-nav>li>a:hover {
+    background-color: #f8f8f8;
+}
+#sidebar .navside.navside-default .navside-nav>.active > a,
+#sidebar .navside.navside-default .navside-nav>.active > a:hover {
+    color: #fff;
+    background-color: #3fa9f5;
+}
+

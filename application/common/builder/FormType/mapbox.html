@@ -1,0 +1,81 @@
+<case value="mapbox">
+    <div class="form-group item_{$[type]form.name} {$[type]form.extra.class}">
+        <label class="left control-label">{$[type]form.title}：</label>
+        <div class="right">
+            <input id="[type]{$group_k}_map_input_{$[type]k}" type="hidden" class="form-control input text" name="{$[type]form.name}" value="{$[type]form.value}" {$[type]form.extra.attr}>
+            <div id="[type]{$group_k}_map_box_{$[type]k}" style="height:400px;width:100%;border:1px solid #bcbcbc;"></div>
+            <link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet'>
+            <script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
+            <?php 
+                $latlng = explode(',', $[type]form['value']);
+            ?>
+            <script type="text/javascript">
+                $(function(){
+                    // 根据解析出的经纬度设置点的位置
+                    function show_mapbox(err, data) {
+                        map.setView([data.latlng[0], data.latlng[1]], 12);
+                        marker.setLatLng([data.latlng[0], data.latlng[1]]);
+                        $('#[type]{$group_k}_map_input_{$[type]k}').val(get_gps(marker.getLatLng()));
+                    }
+
+                    // 转换为格式化GPS坐标，如：128.12121,39.12123
+                    function get_gps(latlng){
+                        latlng = latlng.toString();
+                        latlng = latlng.substring(7,latlng.length-1);
+                        return latlng;
+                    }
+
+                    // 地图Token
+                    L.mapbox.accessToken = 'pk.eyJ1IjoiaWpyeSIsImEiOiJjaW14ZXh6dDIwM2dpdXJra3gwaThud3k0In0.8uZFSvg-T_-k7WKH57rkpw';
+
+                    // 初始化地图
+                    var map = L.mapbox.map('[type]{$group_k}_map_box_{$[type]k}', 'mapbox.streets');
+
+                    // 设置标记
+                    var marker = L.marker([40.7, -73.9],{
+                        icon: L.mapbox.marker.icon({
+                            'marker-color': 'ff8888'
+                        }),
+                        draggable: true
+                    }).addTo(map);
+
+                    // 获取初始化中心定位坐标
+                    var geocoder = L.mapbox.geocoder('mapbox.places');
+                    var val = '{$[type]form.value}';
+                    if (val) {
+                        map.setView([{$latlng[0]|default=0}, {$latlng[1]|default=0}], 12);
+                        marker.setLatLng([{$latlng[0]|default=0}, {$latlng[1]|default=0}]);
+                    } else {
+                        geocoder.query("<?php echo $[type]form['extra']['self']['city']?: '南京市'?>", show_mapbox);
+                    }
+
+                    // 拖动标记后把坐标传给标单
+                    marker.on('dragend',function(){
+                        var latlng = marker.getLatLng();
+                        latlng = get_gps(latlng);
+                        $('#[type]{$group_k}_map_input_{$[type]k}').val(latlng);
+                    });
+
+                    // 地图点击事件，当标记被点击后，设置相应的表单值
+                    map.on('click',function(e){
+                        var c = e.latlng;
+                        marker.setLatLng(c);
+                        var latlng = get_gps(c);
+                        $('#[type]{$group_k}_map_input_{$[type]k}').val(latlng);
+                    });
+
+                    // 监听联动输入框，自动重新定位
+                    var auto = "{$[type]form['extra']['self']['auto']}";
+                    if (auto) {
+                        $(".item_{$[type]form['extra']['self']['auto']} input[name={$[type]form['extra']['self']['auto']}]").keyup(function() {
+                            var tmp = $(this).val();
+                            if (tmp) {
+                                geocoder.query(tmp, show_mapbox);
+                            }
+                        });
+                    }
+                });
+            </script>
+        </div>
+    </div>
+</case>

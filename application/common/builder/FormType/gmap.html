@@ -1,0 +1,117 @@
+<case value="gmap">
+    <div class="form-group item_{$[type]form.name} {$[type]form.extra.class}">
+        <label class="left control-label">{$[type]form.title}：</label>
+        <div class="right">
+            <input id="[type]{$group_k}_map_input_{$[type]k}" type="hidden" class="form-control input text" name="{$[type]form.name}" value="{$[type]form.value}" {$[type]form.extra.attr}>
+            <div id="[type]{$group_k}_map_box_{$[type]k}" style="height:400px;width:100%;border:1px solid #bcbcbc;"></div>
+            <link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet'>
+            <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+            <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/richmarker/src/richmarker.js"></script>
+            <?php 
+                $latlng = explode(',', $[type]form['value']);
+            ?>
+            <script type="text/javascript">
+                $(function(){
+                    // 初始化地图
+                    var val = '{$[type]form.value}';
+                    if (val) {
+                        var map_center = new google.maps.LatLng({$latlng[0]|default=0}, {$latlng[1]|default=0});
+                    } else {
+                        var map_center = new google.maps.LatLng(40.7, -73.9);
+                    }
+                    var map = new google.maps.Map(document.getElementById('[type]{$group_k}_map_box_{$[type]k}'), {
+                        zoom: 12,
+                        center: map_center,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    });
+
+                    // 地图标记
+                    var marker;
+
+                    // 获取初始化中心定位坐标
+                    var geocoder = new google.maps.Geocoder();
+                    //创建请求对象
+                    var geocoderRequest = {address: "<?php echo $[type]form['extra']['self']['city']?: '南京市'?>"};
+                    if (val) {
+                        // 把返回的第一个点标记在地图上。
+                        var my_latlng = new google.maps.LatLng({$latlng[0]|default=0}, {$latlng[1]|default=0});
+                        marker = new google.maps.Marker({
+                            map: map,
+                            position: my_latlng,
+                            animation: google.maps.Animation.DROP,
+                            draggable: true,
+                        });
+
+                        // 标志位置改变事件
+                        google.maps.event.addListener(marker, 'position_changed', function() {
+                            var str = marker.getPosition();
+                            if (str) {
+                                $('#[type]{$group_k}_map_input_{$[type]k}').val(str.lat() + ',' + str.lng());
+                            }
+                        });
+
+                        // 点击事件
+                        google.maps.event.addListener(map, 'click', function(e) {
+                            marker.setPosition(e.latLng);
+                            console.log(e.latLng);
+                        });
+                    } else {
+                        geocoder.geocode(geocoderRequest, function(results, status) {
+                            //判断解析状态
+                            if (status == google.maps.GeocoderStatus.OK) {
+                                //如果返回成功，把返回的第一个点设置为屏幕的中心点。
+                                map.setCenter(results[0].geometry.location);
+
+                                // 把返回的第一个点标记在地图上。
+                                marker = new google.maps.Marker({
+                                    map: map,
+                                    position: results[0].geometry.location,
+                                    animation: google.maps.Animation.DROP,
+                                    draggable: true,
+                                });
+                                $('#[type]{$group_k}_map_input_{$[type]k}').val(results[0].geometry.location.lat() + ',' + results[0].geometry.location.lng());
+
+                                // 标志位置改变事件
+                                google.maps.event.addListener(marker, 'position_changed', function() {
+                                    var str = marker.getPosition();
+                                    if (str) {
+                                        $('#[type]{$group_k}_map_input_{$[type]k}').val(str.lat() + ',' + str.lng());
+                                    }
+                                });
+
+                                // 点击事件
+                                google.maps.event.addListener(map, 'click', function(e) {
+                                    marker.setPosition(e.latLng);
+                                    console.log(e.latLng);
+                                });
+                            } else {
+                                console.log("Geocode was not successful for the following reason: " + status);
+                            }
+                        });
+                    }
+
+                    // 监听联动输入框，自动重新定位
+                    var auto = "{$[type]form['extra']['self']['auto']}";
+                    if (auto) {
+                        $(".item_{$[type]form['extra']['self']['auto']} input[name={$[type]form['extra']['self']['auto']}]").keyup(function() {
+                            var tmp = $(this).val();
+                            if (tmp) {
+                                geocoderRequest = {address: tmp};
+                                geocoder.geocode(geocoderRequest, function(results, status) {
+                                    //判断解析状态
+                                    if (status == google.maps.GeocoderStatus.OK) {
+                                        map.setCenter(results[0].geometry.location);
+                                        marker.setPosition(results[0].geometry.location);
+                                        $('#[type]{$group_k}_map_input_{$[type]k}').val(results[0].geometry.location.lat() + ',' + results[0].geometry.location.lng());
+                                    } else {
+                                        console.log("Geocode was not successful for the following reason: " + status);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            </script>
+        </div>
+    </div>
+</case>

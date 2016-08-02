@@ -1,0 +1,86 @@
+<case value="bdmap">
+    <div class="form-group item_{$[type]form.name} {$[type]form.extra.class}">
+        <label class="left control-label">{$[type]form.title}：</label>
+        <div class="right">
+            <input id="[type]{$group_k}_map_input_{$[type]k}" type="hidden" class="form-control input text" name="{$[type]form.name}" value="{$[type]form.value}" {$[type]form.extra.attr}>
+            <div id="[type]{$group_k}_map_box_{$[type]k}" style="height:400px;width:100%;border:1px solid #bcbcbc;"></div>
+            <script type="text/javascript" src="__PUBLIC__/libs/bdmap/bdmap.js"></script>
+            <script type="text/javascript">
+                $(function(){
+                    //创建地图
+                    var zoom = 12;
+                    var point=new BMap.Point(113.63156,34.83794);
+                    var map = new BMap.Map('[type]{$group_k}_map_box_{$[type]k}');
+
+                    //创建地址解析器实例
+                    var myGeo = new BMap.Geocoder();
+                    map.centerAndZoom(point, zoom);//设初始化地图。
+
+                    // 工具栏
+                    var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
+                    var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件
+                    var top_right_navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}); //右上角，仅包含平移和缩放按钮
+                    map.addControl(top_left_control);
+                    map.addControl(top_left_navigation);
+                    map.addControl(top_right_navigation);
+
+                    //设置版权控件位置
+                    var cr = new BMap.CopyrightControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT});
+                    map.addControl(cr); //添加版权控件
+                    var bs = map.getBounds(); //返回地图可视区域
+                    cr.addCopyright({id: 1, content: "<a target='_blank' href='http://www.corethink.cn' style='font-size:12px;'>OpenCMF</a>", bounds: bs});
+
+                    // 没有GPS坐标则按城市定位
+                    var val = '{$[type]form.value}';
+                    if (val) {
+                        var mx = val.substr(0, val.indexOf(","));
+                        var my = val.substr( val.indexOf(",") + 1);
+                        point = new BMap.Point(my,mx);
+                        map.centerAndZoom(point, zoom); //重新调整位置
+                    } else {
+                        myGeo.getPoint("<?php echo $[type]form['extra']['self']['city']?: '南京'?>", function(poi){
+                            map.centerAndZoom(poi, zoom);
+                            marker.setPosition(poi); //重调标注位置
+                            try{document.getElementById('[type]{$group_k}_map_input_{$[type]k}').value = poi.lat + "," + poi.lng;}catch (ex) {}
+                        });
+                    }
+
+                    // 添加标注
+                    var marker = new BMap.Marker(point);
+                    map.addOverlay(marker); // 将标注添加到地图中
+                    marker.enableDragging(); //可拖拽
+                    var label = new BMap.Label("拖拽到您的位置", {offset:new BMap.Size(20,-15)});
+                    label.setStyle({ backgroundColor:"red", color:"white", fontSize : "12px" });
+                    marker.setLabel(label);
+
+                    //拖拽设置位置
+                    marker.addEventListener("dragend", function(e){
+                        try{document.getElementById('[type]{$group_k}_map_input_{$[type]k}').value = e.point.lat + "," + e.point.lng;}catch (ex) {}
+                    });
+
+                    //点击设置位置
+                    map.addEventListener("click", function(e){
+                        marker.setPosition(e.point); //重调标注位置
+                        try{document.getElementById('[type]{$group_k}_map_input_{$[type]k}').value = e.point.lat + "," + e.point.lng;}catch (ex) {}
+                    });
+
+                    // 监听联动输入框，自动重新定位
+                    var auto = "{$[type]form['extra']['self']['auto']}";
+                    if (auto) {
+                        $(".item_{$[type]form['extra']['self']['auto']} input[name={$[type]form['extra']['self']['auto']}]").keyup(function() {
+                            var tmp = $(this).val();
+                            if (tmp) {
+                                //将地址解析结果显示在地图上，并调整地图视野。此过程为异步，所以要重设标注
+                                myGeo.getPoint(tmp, function(poi){
+                                    map.centerAndZoom(poi, zoom);
+                                    marker.setPosition(poi); //重调标注位置
+                                    try{document.getElementById('[type]{$group_k}_map_input_{$[type]k}').value = poi.lat + "," + poi.lng;}catch (ex) {}
+                                });
+                            }
+                        });
+                    }
+                });
+            </script>
+        </div>
+    </div>
+</case>

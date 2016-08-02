@@ -1,15 +1,36 @@
 <?php
 // +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
+// | OpenCMF [ Simple Efficient Excellent ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006~2016 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2014 http://www.opencmf.cn All rights reserved.
 // +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: liu21st <liu21st@gmail.com>
-// +----------------------------------------------------------------------
+// | Author: jry <598821125@qq.com>
+// +---------------------------------------------------------------------- 
 
-return [
+$_config =  [
+    /**
+     * 产品配置
+     * 根据OpenCMF用户协议：
+     * 任何情况下使用OpenCMF均需获取官方授权，违者追究法律责任，授权联系：admin@opencmf.cn
+     */
+    'PRODUCT_NAME'    => 'CoreThink',                      // 产品名称
+    'PRODUCT_LOGO'    => '<b><span class="open" style="color: #a5aeb4;">Core</span><span class="Think" style="color: #2699ed;">CMF</span></b>',  // 产品Logo
+    'CURRENT_VERSION' => '2.0.0',                        // 当前版本号
+    'DEVELOP_VERSION' => 'beta1',                        // 开发版本号
+    'BUILD_VERSION'   => '201607181550',                 // 编译标记
+    'PRODUCT_MODEL'   => 'corethink',                     // 产品型号
+    'PRODUCT_TITLE'   => '开源版',                        // 产品标题
+    'WEBSITE_DOMAIN'  => 'http://www.corethink.cn',      // 官方网址
+    'UPDATE_URL'      => '/appstore/home/core/update',   // 官方更新网址
+    'COMPANY_NAME'    => '南京科斯克网络科技有限公司',     // 公司名称
+    'DEVELOP_TEAM'    => '南京科斯克网络科技有限公司',     // 当前项目开发团队名称
+
+    // 产品简介
+    'PRODUCT_INFO'    => 'OpenCMF是一套基于统一核心的通用互联网+信息化服务解决方案，追求简单、高效、卓越。可轻松实现支持多终端的WEB产品快速搭建、部署、上线。系统功能采用模块化、组件化、插件化等开放化低耦合设计，应用商城拥有丰富的功能模块、插件、主题，便于用户灵活扩展和二次开发。',
+
+    // 公司简介
+    'COMPANY_INFO'    => '南京科斯克网络科技有限公司是一家新兴的互联网+项目技术解决方案提供商。我们用敏锐的视角洞察IT市场的每一次变革,我们顶着时代变迁的浪潮站在了前沿,以开拓互联网行业新渠道为己任。',
+
     // +----------------------------------------------------------------------
     // | 应用设置
     // +----------------------------------------------------------------------
@@ -27,9 +48,9 @@ return [
     // 注册的根命名空间
     'root_namespace'         => [],
     // 扩展配置文件
-    'extra_config_list'      => ['database', 'route', 'validate'],
+    'extra_config_list'      => ['route', 'validate'],
     // 扩展函数文件
-    'extra_file_list'        => [THINK_PATH . 'helper' . EXT],
+    'extra_file_list'        => [THINK_PATH . 'helper' . EXT, APP_PATH. 'helper' . EXT],
     // 默认输出类型
     'default_return_type'    => 'html',
     // 默认AJAX 数据返回格式,可选json xml ...
@@ -54,7 +75,7 @@ return [
     // +----------------------------------------------------------------------
 
     // 默认模块名
-    'default_module'         => 'index',
+    'default_module'         => 'home',
     // 禁止访问模块
     'deny_module_list'       => ['common'],
     // 默认控制器名
@@ -115,13 +136,13 @@ return [
         // 模板文件名分隔符
         'view_depr'    => DS,
         // 模板引擎普通标签开始标记
-        'tpl_begin'    => '{',
+        'tpl_begin'    => '<',
         // 模板引擎普通标签结束标记
-        'tpl_end'      => '}',
+        'tpl_end'      => '>',
         // 标签库标签开始标记
-        'taglib_begin' => '{',
+        'taglib_begin' => '<',
         // 标签库标签结束标记
-        'taglib_end'   => '}',
+        'taglib_end'   => '>',
     ],
 
     // 视图输出字符串内容替换
@@ -222,3 +243,98 @@ return [
         'list_rows' => 15,
     ],
 ];
+
+// 获取数据库配置信息，手动修改数据库配置请修改./Data/db.php，这里无需改动
+if (is_file('./data/db.php')) {
+    $db_config = include './data/db.php';  // 包含数据库连接配置
+} else {
+    // 开启开发部署模式
+    if (@$_SERVER[ENV_PRE.'DEV_MODE'] === 'true') {
+        // 数据库配置
+        $db_config = array(
+            'database'  => [
+                // 数据库类型
+                'type'           => @$_SERVER[ENV_PRE.'DB_TYPE'] ? : 'mysql',
+                // 数据库连接DSN配置
+                'dsn'            => '',
+                // 服务器地址
+                'hostname'       => @$_SERVER[ENV_PRE.'DB_HOST'] ? : '127.0.0.1',
+                // 数据库名
+                'database'       => @$_SERVER[ENV_PRE.'DB_NAME'] ? : 'opencmf',
+                // 数据库用户名
+                'username'       => @$_SERVER[ENV_PRE.'DB_USER'] ? : 'root',
+                // 数据库密码
+                'password'       => @$_SERVER[ENV_PRE.'DB_PWD']  ? : '',
+                // 数据库连接端口
+                'hostport'       => @$_SERVER[ENV_PRE.'DB_PORT'] ? : '3306',
+                // 数据库连接参数
+                'params'         => [],
+                // 数据库编码默认采用utf8
+                'charset'        => 'utf8',
+                // 数据库表前缀
+                'prefix'         => @$_SERVER[ENV_PRE.'DB_PREFIX'] ? : 'oc_',
+                // 数据库调试模式
+                'debug'          => false,
+                // 数据库部署方式:0 集中式(单一服务器),1 分布式(主从服务器)
+                'deploy'         => 0,
+                // 数据库读写是否分离 主从式有效
+                'rw_separate'    => false,
+                // 读写分离后 主服务器数量
+                'master_num'     => 1,
+                // 指定从服务器序号
+                'slave_no'       => '',
+                // 是否严格检查字段是否存在
+                'fields_strict'  => true,
+                // 自动写入时间戳字段
+                'auto_timestamp' => false,
+            ],
+        );
+    } else {
+        // 数据库配置
+        $db_config = array(
+            'database'  => [
+                // 数据库类型
+                'type'           => 'mysql',
+                // 数据库连接DSN配置
+                'dsn'            => '',
+                // 服务器地址
+                'hostname'       => '127.0.0.1',
+                // 数据库名
+                'database'       => 'opencmf',
+                // 数据库用户名
+                'username'       => 'root',
+                // 数据库密码
+                'password'       => '',
+                // 数据库连接端口
+                'hostport'       => '',
+                // 数据库连接参数
+                'params'         => [],
+                // 数据库编码默认采用utf8
+                'charset'        => 'utf8',
+                // 数据库表前缀
+                'prefix'         => 'oc_',
+                // 数据库调试模式
+                'debug'          => false,
+                // 数据库部署方式:0 集中式(单一服务器),1 分布式(主从服务器)
+                'deploy'         => 0,
+                // 数据库读写是否分离 主从式有效
+                'rw_separate'    => false,
+                // 读写分离后 主服务器数量
+                'master_num'     => 1,
+                // 指定从服务器序号
+                'slave_no'       => '',
+                // 是否严格检查字段是否存在
+                'fields_strict'  => true,
+                // 自动写入时间戳字段
+                'auto_timestamp' => false,
+            ],
+        );
+    }
+}
+
+// 返回合并的配置
+return array_merge(
+    $_config,                                      // 系统全局默认配置
+    $db_config,                                    // 数据库配置数组
+    include APP_PATH.'common/builder/config.php'   // 包含Builder配置
+);

@@ -1,0 +1,522 @@
+<extend name="$_home_public_layout"/>
+
+<block name="title"><title>{:C('WEB_SITE_TITLE')}－{:C('WEB_SITE_SLOGAN')}</title></block>
+
+<block name="style">
+    <style type="text/css">
+        /* section */
+        .section {
+            padding: 10px 0;
+        }
+        .section h3 {
+            margin-bottom: 30px;
+        }
+
+        /* 优秀特性 */
+        .section-feature .feature-item {
+            margin-bottom: 30px;
+            position: relative;
+            cursor: pointer;
+        }
+        .section-feature .feature-item .feature-icon{
+            color:#fff;
+            padding-top:30px;
+            padding-bottom: 30px;
+        }
+        .section-feature .feature-item .feature-caption {
+            border: 1px solid rgb(228,229,230);
+            border-top: none;
+            padding-top:15px;
+            padding-bottom: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .section-feature .feature-item .feature-caption h4 {
+            margin: 0px;
+            font-weight: 300;
+            font-size: 14px;
+        }
+        .section-feature .feature-cover {
+            width: 100%;
+            height: 0px;
+            position: absolute;
+            top:0px;
+            left: 0px;
+            opacity: 0;
+            transition: all 0.3s;
+            color: #fff;
+            padding: 20px;
+        }
+        .section-feature .feature-cover.active{
+            height: 130px;
+            position: absolute;
+            top:0px;
+            left: 0px;
+            opacity: 1;
+            z-index: 10;
+        }
+
+        @media (min-width: 768px) {
+            /* 导航 */
+            .top-nav .navbar-nav>li>a {
+                color: #DBEEFE;
+            }
+            .main-nav {
+                background: transparent;
+                position: absolute;
+                z-index: 999;
+                width: 100%;
+                border: 0;
+            }
+            .main-nav .navbar-brand span {
+                color: #fff !important;
+            }
+            .main-nav .navbar-nav>li>a {
+                font-size: 15px;
+                color: #fff;
+            }
+            .main-nav .navbar-nav>li>a:focus,
+            .main-nav .navbar-nav>li>a:hover{
+                color: #eee;
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* section */
+            .section {
+                padding: 0px 0;
+            }
+            .section h3 {
+                margin-bottom: 15px;
+            }
+        }
+
+        /* 第一张默认幻灯片的动画 */
+        @keyframes indexZoom {
+            0% {
+                transform: scale(1,1);
+                -ms-transform:scale(1,1);
+                -moz-transform:scale(1,1);
+                -webkit-transform:scale(1,1);
+                -o-transform:scale(1,1);
+            }
+            100% {
+                transform: scale(1.3,1.3);
+                -ms-transform:scale(1.3,1.3);
+                -moz-transform:scale(1.3,1.3);
+                -webkit-transform:scale(1.3,1.3);
+                -o-transform:scale(1.3,1.3);
+            }
+        }
+        @-webkit-keyframes indexZoom {
+            0%   {
+                transform: scale(1,1);
+                -ms-transform:scale(1,1);
+                -moz-transform:scale(1,1);
+                -webkit-transform:scale(1,1);
+                -o-transform:scale(1,1);
+            }
+            100% {
+                transform: scale(1.3,1.3);
+                -ms-transform:scale(1.3,1.3);
+                -moz-transform:scale(1.3,1.3);
+                -webkit-transform:scale(1.3,1.3);
+                -o-transform:scale(1.3,1.3);
+            }
+        }
+        @-moz-keyframes indexZoom {
+            0%   {
+                transform: scale(1,1);
+                -ms-transform:scale(1,1);
+                -moz-transform:scale(1,1);
+                -webkit-transform:scale(1,1);
+                -o-transform:scale(1,1);
+            }
+            100% {
+                transform: scale(1.3,1.3);
+                -ms-transform:scale(1.3,1.3);
+                -moz-transform:scale(1.3,1.3);
+                -webkit-transform:scale(1.3,1.3);
+                -o-transform:scale(1.3,1.3);
+            }
+        }
+        @-o-keyframes indexZoom {
+            0%   {
+                transform: scale(1,1);
+                -ms-transform:scale(1,1);
+                -moz-transform:scale(1,1);
+                -webkit-transform:scale(1,1);
+                -o-transform:scale(1,1);
+            }
+            100% {
+                transform: scale(1.3,1.3);
+                -ms-transform:scale(1.3,1.3);
+                -moz-transform:scale(1.3,1.3);
+                -webkit-transform:scale(1.3,1.3);
+                -o-transform:scale(1.3,1.3);
+            }
+        }
+    </style>
+</block>
+
+<block name="jumbotron">
+    <div class="tp-banner-container">
+        <div class="tp-banner">
+            <ul>
+                <li data-transition="fade" data-slotamount="3" data-masterspeed="1000" data-delay="5000" >
+                    <!-- MAIN IMAGE -->
+                    <div class="jumbotron-primary" style="position: absolute;top: 0;width:100%;height: 100%;background-size: 100%;background-position: bottom center;background-image:url(__HOME_IMG__/index/index_data_point.png);background-repeat: no-repeat;animation: indexZoom 12s linear forwards; -webkit-animation: indexZoom 12s linear forwards;transform: matrix(1.0008823849749433, 0, 0, 1.0008823849749433, 0, 0);background-attachment: scroll;"></div>
+
+                    <!-- LAYERS -->
+                    <!-- LAYER -->
+                    <div class="tp-caption finewide_large_white customin customout tp-resizeme"
+                        data-x="center" data-hoffset="0"
+                        data-y="center" data-voffset="-40"
+                        data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+                        data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+                        data-speed="500"
+                        data-start="500"
+                        data-easing="Power3.easeInOut"
+                        data-splitin="chars"
+                        data-splitout="chars"
+                        data-elementdelay="0.08"
+                        data-endelementdelay="0.08"
+                        data-endspeed="500"
+                        style="z-index: 2; max-width: auto; max-height: auto; white-space: nowrap;">{:C('WEB_SITE_TITLE')}
+                    </div>
+
+                    <!-- LAYER -->
+                    <div class="tp-caption whitedivider3px customin customout tp-resizeme"
+                        data-x="center" data-hoffset="0"
+                        data-y="center" data-voffset="0"
+                        data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+                        data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+                        data-speed="1200"
+                        data-start="800"
+                        data-easing="Power3.easeInOut"
+                        data-splitin="none"
+                        data-splitout="none"
+                        data-elementdelay="0.1"
+                        data-endelementdelay="0.1"
+                        data-endspeed="500"
+                        style="z-index: 3; max-width: auto; max-height: auto; white-space: nowrap;">&nbsp;
+                    </div>
+
+                    <!-- LAYER -->
+                    <div class="tp-caption finewide_medium_white randomrotate customout tp-resizeme"
+                        data-x="center" data-hoffset="0"
+                        data-y="center" data-voffset="50"
+                        data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+                        data-speed="500"
+                        data-start="500"
+                        data-easing="Power3.easeInOut"
+                        data-splitin="chars"
+                        data-splitout="chars"
+                        data-elementdelay="0.08"
+                        data-endelementdelay="0.08"
+                        data-endspeed="500"
+                        style="z-index: 4; max-width: auto; max-height: auto; white-space: nowrap;">{:C('WEB_SITE_SLOGAN')}
+                    </div>
+                </li>
+
+                <li data-transition="fade" data-slotamount="3" data-masterspeed="1000" data-delay="5000">
+                    <!-- MAIN IMAGE -->
+
+                    <!-- LAYERS -->
+                    <!-- LAYER -->
+                    <div class="tp-caption finewide_large_white customin customout tp-resizeme"
+                        data-x="right" data-hoffset="-200"
+                        data-y="center" data-voffset="-140"
+                        data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+                        data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+                        data-speed="500"
+                        data-start="500"
+                        data-easing="Power3.easeInOut"
+                        data-splitin="chars"
+                        data-splitout="chars"
+                        data-elementdelay="0.08"
+                        data-endelementdelay="0.08"
+                        data-endspeed="500"
+                        style="z-index: 2; max-width: auto; max-height: auto; white-space: nowrap;">多平台支持
+                    </div>
+
+                    <!-- LAYER -->
+                    <div class="tp-caption whitedivider3px customin customout tp-resizeme"
+                        data-x="right" data-hoffset="-150"
+                        data-y="center" data-voffset="-100"
+                        data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+                        data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+                        data-speed="1200"
+                        data-start="800"
+                        data-easing="Power3.easeInOut"
+                        data-splitin="none"
+                        data-splitout="none"
+                        data-elementdelay="0.1"
+                        data-endelementdelay="0.1"
+                        data-endspeed="500"
+                        style="z-index: 3; max-width: auto; max-height: auto; white-space: nowrap;">&nbsp;
+                    </div>
+
+                    <!-- LAYER -->
+                    <div class="tp-caption finewide_small_white randomrotate customout tp-resizeme"
+                        data-x="right" data-hoffset="-60"
+                        data-y="center" data-voffset="-70"
+                        data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+                        data-speed="500"
+                        data-start="500"
+                        data-easing="Power3.easeInOut"
+                        data-splitin="chars"
+                        data-splitout="chars"
+                        data-elementdelay="0.08"
+                        data-endelementdelay="0.08"
+                        data-endspeed="300"
+                        style="z-index: 4; max-width: auto; max-height: auto;">完美支持PC、微信、Wap、iOS、安卓等平台
+                    </div>
+
+                    <div class="tp-caption skewfromleft start"
+                        data-x="left" data-hoffset="0"
+                        data-y="top" data-voffset="40"
+                        data-speed="500"
+                        data-start="800"
+                        data-easing="Power2.easeInOut"
+                        data-endeasing="Power1.easeIn"
+                        data-captionhidden="off"
+                        data-endspeed="300"
+                        style="z-index: 5; max-width: auto; max-height: auto; white-space: nowrap;"><img src="__HOME_IMG__/index/index_device.png">
+                    </div>
+
+                    <div class="tp-caption skewfromright start"
+                        data-x="right" data-hoffset="-400"
+                        data-y="bottom" data-voffset="-150"
+                        data-speed="500"
+                        data-start="1200"
+                        data-easing="Power2.easeInOut"
+                        data-endeasing="Power1.easeIn"
+                        data-captionhidden="off"
+                        data-endspeed="300"
+                        style="z-index: 5; max-width: auto; max-height: auto; white-space: nowrap;"><img width="120" src="__HOME_IMG__/default/ios.png">
+                    </div>
+
+                    <div class="tp-caption skewfromright start"
+                        data-x="right" data-hoffset="-200"
+                        data-y="bottom" data-voffset="-150"
+                        data-speed="500"
+                        data-start="1200"
+                        data-easing="Power2.easeInOut"
+                        data-endeasing="Power1.easeIn"
+                        data-captionhidden="off"
+                        data-endspeed="300"
+                        style="z-index: 5; max-width: auto; max-height: auto; white-space: nowrap;"><img width="120" src="__HOME_IMG__/default/android.png">
+                    </div>
+                </li>
+
+                <!-- 幻灯片列表 -->
+                <opencmf:slider_list name="slider">
+                    <li data-transition="fade" data-slotamount="3" data-masterspeed="1000" data-delay="4000">
+                        <img data-bgposition="center center" data-bgrepeat="no-repeat" style="width: 100%;height: 100%;" src="{$slider.cover_url}">
+                    </li>
+                </opencmf:slider_list>
+            </ul>
+            <div class="tp-bannertimer"></div>
+        </div>
+    </div>
+</block>
+
+<block name="breadcrumb"></block>
+
+<block name="main">
+    <div class="section section-feature">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3 feature-bg text-center" >
+                    <h3 class="feature-title" style="color:rgb(109,188,245)">优秀特性</h3>
+                </div>
+            </div>
+            <div class="row feature-list">
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(81,175,241)"><span class="fa fa-cloud fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">积木式云平台无限扩展</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(81,175,241)">
+                            <div class="feature-cover-content">
+                                系统功能全面模块化、插件化；云商城拥有丰富的模块、插件、主题，可以用来对系统功能进行无限扩展。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(245,181,91)"><span class="fa fa-hourglass-1 fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">Builder页面生成技术</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(245,181,91)">
+                            <div class="feature-cover-content">
+                                独创的Builder页面自动生成技术极大的解放了后端开发者的工作，只需要专注于业务逻辑，页面交给Builder帮您完成。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(59,183,225)"><span class="fa fa-tablet fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">多终端多平台支持</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(59,183,225)">
+                            <div class="feature-cover-content">
+                                支持PC、手机Wap、微信、iOS、安卓等流行操作系统平台，真正的一次编写，到处运行。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(48,203,160)"><span class="fa fa-adjust fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">多主题支持</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(48,203,160)">
+                            <div class="feature-cover-content">
+                                系统支持多主题机制，允许用户建立自己的个性化主题，每个主题支持只对部分模块进行个性化，其余模块自动加载系统默认主题。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(8,74,155)"><span class="fa fa-book fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">文档齐全开发简单</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(8,74,155)">
+                            <div class="feature-cover-content">
+                                官方开发文档齐全、更新及时，让二次开发变得简单。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(66,169,243)"><span class="fa fa-flash fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">基于ThinkPHP3.2.3最新版</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(66,169,243)">
+                            <div class="feature-cover-content">
+                                ThinkPHP 是一个免费开源的，快速、简单的面向对象的 轻量级PHP开发框架 ，遵循Apache2开源协议发布，是为了敏捷WEB应用开发和简化企业应用开发而诞生的。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(236,64,227)"><span class="fa fa-desktop fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">基于Bootstrap3.3.5</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(236,64,227)">
+                            <div class="feature-cover-content">
+                                官方开发cui前端框架，是在Bootstrap3.3.5基础上扩展出来的完全兼容Bootstrap3的最适合国人的前端框架。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(231,106,121)"><span class="fa fa-circle-o-notch fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">基于Framework7</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(231,106,121)">
+                            <div class="feature-cover-content">
+                                基于Framework7是一个高度还原iOS原生体验的移动端框架，拥有优秀的路由机制，采用Framework7让配套App与Wap公用一套界面成为可能。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(243,152,71)"><span class="fa fa-server fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">云存储支持</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(243,152,71)">
+                            <div class="feature-cover-content">
+                                支持Ftp、百度Bcs、七牛云存储、又拍云、新浪Sae、阿里云OSS等多种云平台，让您的静态资源托管无忧。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(127,126,87)"><span class="fa fa-users fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">多种注册方式</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(127,126,87)">
+                            <div class="feature-cover-content">
+                                支持用户名、邮箱、手机号等方式注册，支持QQ、微博、人人、Github等多种第三方平台登陆。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(91,92,93)"><span class="fa fa-cubes fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">完善的消息推送</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(91,92,93)">
+                            <div class="feature-cover-content">
+                                支持站内消息、微信模板消息、邮件消息、短信消息、APP推送等全途径消息传递。APP推送采用极光推送接口，让消息实时传递给用户。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <div class="feature-item text-center">
+                        <div class="feature-icon" style="background:rgb(84,222,234)"><span class="fa fa-heart fa-5x"></span></div>
+                        <div class="feature-caption">
+                            <h4 class="text-center">自主产权技术支持完善</h4>
+                        </div>
+                        <div class="feature-cover" style="background:rgb(84,222,234)">
+                            <div class="feature-cover-content">
+                                本系统经国家教育部科技查新工作站查新认证、具有国家版权中心软件著作权，完全官方自主研发核心技术，技术支持完善。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+
+<block name="script">
+    <script type="text/javascript" src="__PUBLIC__/libs/slider_revolution/js/jquery.themepunch.plugins.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/libs/slider_revolution/js/jquery.themepunch.revolution.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/libs/slider_revolution/css/settings.css" media="screen" />
+    <script type="text/javascript" >
+        $(function(){
+            // 革命滑块
+            $('.tp-banner').revolution({
+                delay:9000,
+                startwidth:1366,
+                startheight:600,
+                hideThumbs:10,
+                fullWidth:"on",
+                forceFullWidth:"on"
+            });
+
+            // 特性详情
+            $('.feature-item').hover(function() {
+                $(this).children('.feature-cover').addClass('active');
+            }, function() {
+                $(this).children('.feature-cover').removeClass('active');
+            });
+        });
+    </script>
+</block>
