@@ -15,6 +15,7 @@ use think\App;
 use think\Config;
 use think\exception\HttpException;
 use think\Hook;
+use think\Loader;
 use think\Log;
 use think\Request;
 use think\Response;
@@ -31,10 +32,10 @@ class Route
         'HEAD'    => [],
         'OPTIONS' => [],
         '*'       => [],
-        'map'     => [],
         'alias'   => [],
         'domain'  => [],
         'pattern' => [],
+        'name'    => [],
     ];
 
     // REST路由操作方法定义
@@ -62,9 +63,10 @@ class Route
     private static $bind = [];
     // 当前分组信息
     private static $group = [];
-    // 路由命名标识（用于快速URL生成）
-    private static $name = [];
     // 当前子域名绑定
+    private static $domainBind;
+    private static $domainRule;
+    // 当前域名
     private static $domain;
 
     /**
@@ -96,11 +98,28 @@ class Route
     {
         if (is_array($domain)) {
             foreach ($domain as $key => $item) {
-                self::$rules['domain'][$key] = [$item, $option, $pattern];
+                self::domain($key, $item, $option, $pattern);
             }
+        } elseif ($rule instanceof \Closure) {
+            // 执行闭包
+            self::setDomain($domain);
+            call_user_func_array($rule, []);
+            self::setDomain(null);
+        } elseif (is_array($rule)) {
+            self::setDomain($domain);
+            self::group('', function () use ($rule) {
+                // 动态注册域名的路由规则
+                self::registerRules($rule);
+            }, $option, $pattern);
+            self::setDomain(null);
         } else {
-            self::$rules['domain'][$domain] = [$rule, $option, $pattern];
+            self::$rules['domain'][$domain]['[bind]'] = [$rule, $option, $pattern];
         }
+    }
+
+    private static function setDomain($domain)
+    {
+        self::$domain = $domain;
     }
 
     /**
@@ -116,17 +135,22 @@ class Route
     }
 
     /**
-     * 设置路由绑定
+     * 设置或者获取路由标识
      * @access public
-     * @param string     $name 路由命名标识
-     * @return string|array
+     * @param string|array     $name 路由命名标识 数组表示批量设置
+     * @param array            $value 路由地址及变量信息
+     * @return array
      */
-    public static function name($name = '')
+    public static function name($name = '', $value = null)
     {
-        if ('' === $name) {
-            return self::$name;
+        if (is_array($name)) {
+            return self::$rules['name'] = $name;
+        } elseif ('' === $name) {
+            return self::$rules['name'];
+        } elseif (!is_null($value)) {
+            self::$rules['name'][$name][] = $value;
         } else {
-            return isset(self::$name[$name]) ? self::$name[$name] : null;
+            return isset(self::$rules['name'][$name]) ? self::$rules['name'][$name] : null;
         }
     }
 
@@ -211,7 +235,7 @@ class Route
     public static function rule($rule, $route = '', $type = '*', $option = [], $pattern = [])
     {
         $group = self::getGroup('name');
-        if (!empty($group)) {
+        if (!is_null($group)) {
             // 路由分组
             $option  = array_merge(self::getGroup('option'), $option);
             $pattern = array_merge(self::getGroup('pattern'), $pattern);
@@ -259,33 +283,56 @@ class Route
         if (is_array($rule)) {
             $name = $rule[0];
             $rule = $rule[1];
+        } elseif (is_string($route)) {
+            $name = $route;
         }
-        if ('$' == substr($rule, -1, 1)) {
+        if (!isset($option['complete_match'])) {
+            if (Config::get('route_complete_match')) {
+                $option['complete_match'] = true;
+            } elseif ('$' == substr($rule, -1, 1)) {
+                // 是否完整匹配
+                $option['complete_match'] = true;
+                $rule                     = substr($rule, 0, -1);
+            }
+        } elseif (empty($option['complete_match']) && '$' == substr($rule, -1, 1)) {
             // 是否完整匹配
             $option['complete_match'] = true;
             $rule                     = substr($rule, 0, -1);
         }
+
         if ('/' != $rule) {
             $rule = trim($rule, '/');
         }
         $vars = self::parseVar($rule);
         if (isset($name)) {
-            self::$name[$name] = [$rule, $vars];
+            self::name($name, [$rule, $vars, self::$domain]);
         }
         if ($group) {
             if ('*' != $type) {
                 $option['method'] = $type;
             }
-            self::$rules['*'][$group]['rule'][] = ['rule' => $rule, 'route' => $route, 'var' => $vars, 'option' => $option, 'pattern' => $pattern];
+            if (self::$domain) {
+                self::$rules['domain'][self::$domain]['*'][$group]['rule'][] = ['rule' => $rule, 'route' => $route, 'var' => $vars, 'option' => $option, 'pattern' => $pattern];
+            } else {
+                self::$rules['*'][$group]['rule'][] = ['rule' => $rule, 'route' => $route, 'var' => $vars, 'option' => $option, 'pattern' => $pattern];
+            }
         } else {
             if ('*' != $type && isset(self::$rules['*'][$rule])) {
                 unset(self::$rules['*'][$rule]);
             }
-            self::$rules[$type][$rule] = ['rule' => $rule, 'route' => $route, 'var' => $vars, 'option' => $option, 'pattern' => $pattern];
+            if (self::$domain) {
+                self::$rules['domain'][self::$domain][$type][$rule] = ['rule' => $rule, 'route' => $route, 'var' => $vars, 'option' => $option, 'pattern' => $pattern];
+            } else {
+                self::$rules[$type][$rule] = ['rule' => $rule, 'route' => $route, 'var' => $vars, 'option' => $option, 'pattern' => $pattern];
+            }
             if ('*' == $type) {
                 // 注册路由快捷方式
                 foreach (['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'] as $method) {
-                    self::$rules[$method][$rule] = true;
+                    if (self::$domain) {
+                        self::$rules['domain'][self::$domain][$method][$rule] = true;
+                    } else {
+                        self::$rules[$method][$rule] = true;
+                    }
                 }
             }
         }
@@ -367,8 +414,18 @@ class Route
                     } else {
                         $route = $val;
                     }
+
+                    $options  = isset($option1) ? $option1 : $option;
+                    $patterns = isset($pattern1) ? $pattern1 : $pattern;
+                    if ('$' == substr($key, -1, 1)) {
+                        // 是否完整匹配
+                        $options['complete_match'] = true;
+                        $key                       = substr($key, 0, -1);
+                    }
                     $vars   = self::parseVar($key);
-                    $item[] = ['rule' => $key, 'route' => $route, 'var' => $vars, 'option' => isset($option1) ? $option1 : $option, 'pattern' => isset($pattern1) ? $pattern1 : $pattern];
+                    $item[] = ['rule' => $key, 'route' => $route, 'var' => $vars, 'option' => $options, 'pattern' => $patterns];
+                    // 设置路由标识
+                    self::name($route, [$key, $vars, self::$domain]);
                 }
                 self::$rules['*'][$name] = ['rule' => $item, 'route' => '', 'var' => [], 'option' => $option, 'pattern' => $pattern];
             }
@@ -624,10 +681,10 @@ class Route
         if (is_array($rules)) {
             self::$rules = $rules;
         } elseif ($rules) {
-            return self::$rules[$rules];
+            return true === $rules ? self::$rules : self::$rules[$rules];
         } else {
             $rules = self::$rules;
-            unset($rules['pattern'], $rules['alias'], $rules['domain']);
+            unset($rules['pattern'], $rules['alias'], $rules['domain'], $rules['name']);
             return $rules;
         }
     }
@@ -636,10 +693,11 @@ class Route
      * 检测子域名部署
      * @access public
      * @param Request   $request Request请求对象
+     * @param array     $currentRules 当前路由规则
      * @param string    $method 请求类型
      * @return void
      */
-    public static function checkDomain($request, $method = 'GET')
+    public static function checkDomain($request, &$currentRules, $method = 'GET')
     {
         // 域名规则
         $rules = self::$rules['domain'];
@@ -684,55 +742,45 @@ class Route
                 }
             }
             if (!empty($item)) {
-                self::$domain = true;
-                // 解析子域名部署规则
-                list($rule, $option, $pattern) = $item;
-                if (!empty($option['https']) && !$request->isSsl()) {
-                    // https检测
-                    throw new HttpException(404, 'must use https request:' . $host);
-                }
-                if ($rule instanceof \Closure) {
-                    // 执行闭包
-                    $reflect    = new \ReflectionFunction($rule);
-                    self::$bind = $reflect->invokeArgs([]);
-                    return;
-                } elseif (is_array($rule)) {
-                    // 清空当前路由规则
-                    self::$rules[$method] = [];
-                    self::$rules['*']     = [];
-                    self::group('', function () use ($rule) {
-                        // 动态注册域名的路由规则
-                        self::registerRules($rule);
-                    }, $option, $pattern);
-                    return;
-                }
-
-                if (strpos($rule, '?')) {
-                    // 传入其它参数
-                    $array  = parse_url($rule);
-                    $result = $array['path'];
-                    parse_str($array['query'], $params);
-                    if (isset($panDomain)) {
-                        $pos = array_search('*', $params);
-                        if (false !== $pos) {
-                            // 泛域名作为参数
-                            $params[$pos] = $panDomain;
-                        }
+                if (isset($item['[bind]'])) {
+                    // 解析子域名部署规则
+                    list($rule, $option, $pattern) = $item['[bind]'];
+                    if (!empty($option['https']) && !$request->isSsl()) {
+                        // https检测
+                        throw new HttpException(404, 'must use https request:' . $host);
                     }
-                    $_GET = array_merge($_GET, $params);
-                } else {
-                    $result = $rule;
-                }
 
-                if (0 === strpos($result, '\\')) {
-                    // 绑定到命名空间 例如 \app\index\behavior
-                    self::$bind = ['type' => 'namespace', 'namespace' => $result];
-                } elseif (0 === strpos($result, '@')) {
-                    // 绑定到类 例如 @app\index\controller\User
-                    self::$bind = ['type' => 'class', 'class' => substr($result, 1)];
+                    if (strpos($rule, '?')) {
+                        // 传入其它参数
+                        $array  = parse_url($rule);
+                        $result = $array['path'];
+                        parse_str($array['query'], $params);
+                        if (isset($panDomain)) {
+                            $pos = array_search('*', $params);
+                            if (false !== $pos) {
+                                // 泛域名作为参数
+                                $params[$pos] = $panDomain;
+                            }
+                        }
+                        $_GET = array_merge($_GET, $params);
+                    } else {
+                        $result = $rule;
+                    }
+
+                    if (0 === strpos($result, '\\')) {
+                        // 绑定到命名空间 例如 \app\index\behavior
+                        self::$bind = ['type' => 'namespace', 'namespace' => $result];
+                    } elseif (0 === strpos($result, '@')) {
+                        // 绑定到类 例如 @app\index\controller\User
+                        self::$bind = ['type' => 'class', 'class' => substr($result, 1)];
+                    } else {
+                        // 绑定到模块/控制器 例如 index/user
+                        self::$bind = ['type' => 'module', 'module' => $result];
+                    }
+                    self::$domainBind = true;
                 } else {
-                    // 绑定到模块/控制器 例如 index/user
-                    self::$bind = ['type' => 'module', 'module' => $result];
+                    self::$domainRule = $item;
+                    $currentRules     = isset($item[$method]) ? $item[$method] : $item['*'];
                 }
             }
         }
@@ -762,13 +810,12 @@ class Route
             }
         }
         $method = $request->method();
-        // 检测域名部署
-        if ($checkDomain) {
-            self::checkDomain($request, $method);
-        }
         // 获取当前请求类型的路由规则
         $rules = self::$rules[$method];
-
+        // 检测域名部署
+        if ($checkDomain) {
+            self::checkDomain($request, $rules, $method);
+        }
         // 检测URL绑定
         $return = self::checkUrlBind($url, $rules, $depr);
         if (false !== $return) {
@@ -781,9 +828,9 @@ class Route
             // 静态路由规则检测
             $rule = $rules[$url];
             if (true === $rule) {
-                $rule = self::$rules['*'][$url];
+                $rule = self::getRouteExpress($url);
             }
-            if (!empty($rule['route'])) {
+            if (!empty($rule['route']) && self::checkOption($rule['option'], $url, $request)) {
                 return self::parseRule($url, $rule['route'], $url, $rule['option']);
             }
         }
@@ -795,6 +842,11 @@ class Route
         return false;
     }
 
+    private static function getRouteExpress($key)
+    {
+        return self::$domainRule ? self::$domainRule['*'][$key] : self::$rules['*'][$key];
+    }
+
     /**
      * 检测路由规则
      * @access private
@@ -803,13 +855,14 @@ class Route
      * @param string    $url URL地址
      * @param string    $depr URL分割符
      * @param string    $group 路由分组名
+     * @param array     $options 路由参数（分组）
      * @return mixed
      */
-    private static function checkRoute($request, $rules, $url, $depr = '/', $group = '')
+    private static function checkRoute($request, $rules, $url, $depr = '/', $group = '', $options = [])
     {
         foreach ($rules as $key => $item) {
             if (true === $item) {
-                $item = self::$rules['*'][$key];
+                $item = self::getRouteExpress($key);
             }
             if (!isset($item['rule'])) {
                 continue;
@@ -825,18 +878,24 @@ class Route
                 continue;
             }
 
+            if (isset($option['ext'])) {
+                // 路由ext参数 优先于系统配置的URL伪静态后缀参数
+                $url = preg_replace('/\.' . $request->ext() . '$/i', '', $url);
+            }
+
             if (is_array($rule)) {
                 // 分组路由
-                if (($pos = strpos($key, ':')) || ($pos = strpos($key, '<'))) {
+                $pos = strpos(str_replace('<', ':', $key), ':');
+                if (false !== $pos) {
                     $str = substr($key, 0, $pos);
                 } else {
                     $str = $key;
                 }
-                if (is_string($str) && 0 !== strpos($url, $str)) {
+                if (is_string($str) && $str && 0 !== strpos($url, $str)) {
                     continue;
                 }
 
-                $result = self::checkRoute($request, $rule, $url, $depr, $key);
+                $result = self::checkRoute($request, $rule, $url, $depr, $key, $option);
                 if (false !== $result) {
                     return $result;
                 }
@@ -849,6 +908,9 @@ class Route
                 }
                 if ($group) {
                     $rule = $group . ($rule ? '/' . ltrim($rule, '/') : '');
+                }
+                if (isset($options['bind_model']) && isset($option['bind_model'])) {
+                    $option['bind_model'] = array_merge($options['bind_model'], $option['bind_model']);
                 }
                 $result = self::checkRule($rule, $route, $url, $pattern, $option);
                 if (false !== $result) {
@@ -923,10 +985,6 @@ class Route
                 case 'namespace':
                     // 绑定到命名空间
                     return self::bindToNamespace($url, $bind, $depr);
-                case 'module':
-                    // 如果有模块/控制器绑定 针对路由到 模块/控制器 有效
-                    $url = (empty(self::$domain) ? $bind . '/' : '') . ltrim($url, '/');
-                    break;
             }
         }
         return false;
@@ -947,7 +1005,7 @@ class Route
         if (!empty($array[1])) {
             self::parseUrlParams($array[1]);
         }
-        return ['type' => 'method', 'method' => [$class, $action], 'params' => []];
+        return ['type' => 'method', 'method' => [$class, $action]];
     }
 
     /**
@@ -966,7 +1024,7 @@ class Route
         if (!empty($array[2])) {
             self::parseUrlParams($array[2]);
         }
-        return ['type' => 'method', 'method' => [$namespace . '\\' . $class, $method], 'params' => []];
+        return ['type' => 'method', 'method' => [$namespace . '\\' . $class, $method]];
     }
 
     /**
@@ -984,7 +1042,7 @@ class Route
         if (!empty($array[1])) {
             self::parseUrlParams($array[1]);
         }
-        return ['type' => 'controller', 'controller' => $controller . '/' . $action, 'params' => []];
+        return ['type' => 'controller', 'controller' => $controller . '/' . $action];
     }
 
     /**
@@ -1094,7 +1152,7 @@ class Route
             $module = Config::get('app_multi_module') ? array_shift($path) : null;
             if ($autoSearch) {
                 // 自动搜索控制器
-                $dir    = APP_PATH . ($module ? $module . DS : '') . 'controller';
+                $dir    = APP_PATH . ($module ? $module . DS : '') . Config::get('url_controller_layer');
                 $suffix = App::$suffix || Config::get('controller_suffix') ? ucfirst(Config::get('url_controller_layer')) : '';
                 $item   = [];
                 foreach ($path as $val) {
@@ -1116,6 +1174,9 @@ class Route
             self::parseUrlParams(empty($path) ? '' : implode('/', $path));
             // 封装路由
             $route = [$module, $controller, $action];
+            if (isset(self::$rules['name'][implode($depr, $route)])) {
+                throw new HttpException(404, 'invalid request:' . $url);
+            }
         }
         return ['type' => 'module', 'module' => $route];
     }
@@ -1175,17 +1236,20 @@ class Route
                 foreach ($matches[1] as $name) {
                     if (strpos($name, '?')) {
                         $name      = substr($name, 0, -1);
-                        $replace[] = '(' . (isset($pattern[$name]) ? $pattern[$name] : '') . '?)';
+                        $replace[] = '(' . (isset($pattern[$name]) ? $pattern[$name] : '\w+') . ')?';
                     } else {
-                        $replace[] = '(' . (isset($pattern[$name]) ? $pattern[$name] : '') . ')';
+                        $replace[] = '(' . (isset($pattern[$name]) ? $pattern[$name] : '\w+') . ')';
                     }
                     $value[] = $name;
                 }
                 $val = str_replace($matches[0], $replace, $val);
-                if (preg_match('/^' . $val . '$/', $m1[$key], $match)) {
+                if (preg_match('/^' . $val . '$/', isset($m1[$key]) ? $m1[$key] : '', $match)) {
                     array_shift($match);
-                    $match = array_slice($match, 0, count($value));
-                    $var   = array_merge($var, array_combine($value, $match));
+                    foreach ($value as $k => $name) {
+                        if (isset($match[$k])) {
+                            $var[$name] = $match[$k];
+                        }
+                    }
                     continue;
                 } else {
                     return false;
@@ -1231,26 +1295,7 @@ class Route
      */
     private static function parseRule($rule, $route, $pathinfo, $option = [], $matches = [], $merge = false)
     {
-        // 检测是否定义路由
-        if (!empty($option['after_behavior'])) {
-            if ($option['after_behavior'] instanceof \Closure) {
-                $result = call_user_func_array($option['after_behavior'], [$route]);
-            } else {
-                foreach ((array) $option['after_behavior'] as $behavior) {
-                    $result = Hook::exec($behavior, '', $route);
-                    if (!is_null($result)) {
-                        break;
-                    }
-                }
-            }
-            // 路由规则重定向
-            if ($result instanceof Response) {
-                return ['type' => 'response', 'response' => $result, 'params' => $matches];
-            } elseif (is_array($result)) {
-                return $result;
-            }
-        }
-
+        $request = Request::instance();
         // 解析路由规则
         if ($rule) {
             $rule = explode('/', $rule);
@@ -1272,6 +1317,7 @@ class Route
         } else {
             $paths = explode('/', $pathinfo);
         }
+
         // 获取路由地址规则
         if (is_string($route) && isset($option['prefix'])) {
             // 路由地址前缀
@@ -1286,27 +1332,99 @@ class Route
                 }
             }
         }
+
+        // 绑定模型数据
+        if (isset($option['bind_model'])) {
+            $bind = [];
+            foreach ($option['bind_model'] as $key => $val) {
+                if ($val instanceof \Closure) {
+                    $result = call_user_func_array($val, [$matches]);
+                } else {
+                    if (is_array($val)) {
+                        $fields    = explode('&', $val[1]);
+                        $model     = $val[0];
+                        $exception = isset($val[2]) ? $val[2] : true;
+                    } else {
+                        $fields    = ['id'];
+                        $model     = $val;
+                        $exception = true;
+                    }
+                    $where = [];
+                    $match = true;
+                    foreach ($fields as $field) {
+                        if (!isset($matches[$field])) {
+                            $match = false;
+                            break;
+                        } else {
+                            $where[$field] = $matches[$field];
+                        }
+                    }
+                    if ($match) {
+                        $query  = strpos($model, '\\') ? $model::where($where) : Loader::model($model)->where($where);
+                        $result = $query->failException($exception)->find();
+                    }
+                }
+                if (!empty($result)) {
+                    $bind[$key] = $result;
+                }
+            }
+            $request->bind($bind);
+        }
+
+        // 解析额外参数
+        self::parseUrlParams(empty($paths) ? '' : implode('/', $paths), $matches);
+        // 记录匹配的路由信息
+        $request->routeInfo(['rule' => $rule, 'route' => $route, 'option' => $option, 'var' => $matches]);
+
+        // 检测路由after行为
+        if (!empty($option['after_behavior'])) {
+            if ($option['after_behavior'] instanceof \Closure) {
+                $result = call_user_func_array($option['after_behavior'], []);
+            } else {
+                foreach ((array) $option['after_behavior'] as $behavior) {
+                    $result = Hook::exec($behavior, '');
+                    if (!is_null($result)) {
+                        break;
+                    }
+                }
+            }
+            // 路由规则重定向
+            if ($result instanceof Response) {
+                return ['type' => 'response', 'response' => $result];
+            } elseif (is_array($result)) {
+                return $result;
+            }
+        }
+
         if ($route instanceof \Closure) {
             // 执行闭包
-            $result = ['type' => 'function', 'function' => $route, 'params' => $matches];
+            $result = ['type' => 'function', 'function' => $route];
         } elseif (0 === strpos($route, '/') || 0 === strpos($route, 'http')) {
             // 路由到重定向地址
             $result = ['type' => 'redirect', 'url' => $route, 'status' => isset($option['status']) ? $option['status'] : 301];
-        } elseif (0 === strpos($route, '\\')) {
+        } elseif (false !== strpos($route, '\\')) {
             // 路由到方法
+            $route  = str_replace('/', '@', $route);
             $method = strpos($route, '@') ? explode('@', $route) : $route;
-            $result = ['type' => 'method', 'method' => $method, 'params' => $matches];
+            $result = ['type' => 'method', 'method' => $method];
         } elseif (0 === strpos($route, '@')) {
             // 路由到控制器
-            $result = ['type' => 'controller', 'controller' => substr($route, 1), 'params' => $matches];
+            $result = ['type' => 'controller', 'controller' => substr($route, 1)];
         } else {
             // 路由到模块/控制器/操作
             $result = self::parseModule($route);
         }
-        // 解析额外参数
-        self::parseUrlParams(empty($paths) ? '' : implode('/', $paths), $matches);
-        // 记录匹配的路由信息
-        Request::instance()->routeInfo(['rule' => $rule, 'route' => $route, 'option' => $option]);
+        // 开启请求缓存
+        if ($request->isGet() && !empty($option['cache'])) {
+            $cache = $option['cache'];
+            if (is_array($cache)) {
+                list($key, $expire) = $cache;
+            } else {
+                $key    = $pathinfo;
+                $expire = $cache;
+            }
+            $request->cache($key, $expire);
+        }
         return $result;
     }
 
@@ -1328,7 +1446,8 @@ class Route
             // 操作方法前缀支持
             $action = 0 !== strpos($action, self::$methodPrefix[$method]) ? self::$methodPrefix[$method] . $action : $action;
         }
-        $_GET = array_merge($_GET, $var);
+        // 设置当前请求的路由变量
+        Request::instance()->route($var);
         // 路由到模块/控制器/操作
         return ['type' => 'module', 'module' => [$module, $controller, $action], 'convert' => false];
     }
@@ -1340,7 +1459,7 @@ class Route
      * @param array     $var 变量
      * @return void
      */
-    private static function parseUrlParams($url, $var = [])
+    private static function parseUrlParams($url, &$var = [])
     {
         if ($url) {
             if (Config::get('url_param_type')) {

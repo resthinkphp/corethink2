@@ -11,7 +11,9 @@
 
 namespace think;
 
+use think\File;
 use think\Request;
+use think\Session;
 
 class Validate
 {
@@ -479,9 +481,10 @@ class Validate
      * @access protected
      * @param mixed     $value  字段值
      * @param string    $rule  验证规则
+     * @param array     $data  验证数据
      * @return bool
      */
-    protected function is($value, $rule)
+    protected function is($value, $rule, $data = [])
     {
         switch ($rule) {
             case 'require':
@@ -541,8 +544,10 @@ class Validate
                 $result = $this->filter($value, FILTER_VALIDATE_FLOAT);
                 break;
             case 'number':
+                $result = is_numeric($value);
+                break;
             case 'integer':
-                // 是否为整形
+                // 是否为整型
                 $result = $this->filter($value, FILTER_VALIDATE_INT);
                 break;
             case 'email':
@@ -551,17 +556,20 @@ class Validate
                 break;
             case 'boolean':
                 // 是否为布尔值
-                $result = $this->filter($value, FILTER_VALIDATE_BOOLEAN);
+                $result = in_array($value, [0, 1, true, false]);
                 break;
             case 'array':
                 // 是否为数组
                 $result = is_array($value);
                 break;
             case 'file':
-                $result = $value instanceof \think\File;
+                $result = $value instanceof File;
                 break;
             case 'image':
-                $result = $value instanceof \think\File && in_array($this->getImageType($value->getRealPath()), [1, 2, 3, 6]);
+                $result = $value instanceof File && in_array($this->getImageType($value->getRealPath()), [1, 2, 3, 6]);
+                break;
+            case 'token':
+                $result = $this->token($value, '__token__', $data);
                 break;
             default:
                 if (isset(self::$type[$rule])) {
@@ -622,7 +630,7 @@ class Validate
      */
     protected function fileExt($file, $rule)
     {
-        if (!($file instanceof \think\File)) {
+        if (!($file instanceof File)) {
             return false;
         }
         if (is_string($rule)) {
@@ -649,7 +657,7 @@ class Validate
      */
     protected function fileMime($file, $rule)
     {
-        if (!($file instanceof \think\File)) {
+        if (!($file instanceof File)) {
             return false;
         }
         if (is_string($rule)) {
@@ -676,7 +684,7 @@ class Validate
      */
     protected function fileSize($file, $rule)
     {
-        if (!($file instanceof \think\File)) {
+        if (!($file instanceof File)) {
             return false;
         }
         if (is_array($file)) {
@@ -700,7 +708,7 @@ class Validate
      */
     protected function image($file, $rule)
     {
-        if (!($file instanceof \think\File)) {
+        if (!($file instanceof File)) {
             return false;
         }
         $rule                        = explode(',', $rule);
@@ -939,7 +947,7 @@ class Validate
     {
         if (is_array($value)) {
             $length = count($value);
-        } elseif ($value instanceof \think\File) {
+        } elseif ($value instanceof File) {
             $length = $value->getSize();
         } else {
             $length = mb_strlen((string) $value);
@@ -966,7 +974,7 @@ class Validate
     {
         if (is_array($value)) {
             $length = count($value);
-        } elseif ($value instanceof \think\File) {
+        } elseif ($value instanceof File) {
             $length = $value->getSize();
         } else {
             $length = mb_strlen((string) $value);
@@ -985,7 +993,7 @@ class Validate
     {
         if (is_array($value)) {
             $length = count($value);
-        } elseif ($value instanceof \think\File) {
+        } elseif ($value instanceof File) {
             $length = $value->getSize();
         } else {
             $length = mb_strlen((string) $value);
@@ -1081,6 +1089,33 @@ class Validate
             $rule = '/^' . $rule . '$/';
         }
         return 1 === preg_match($rule, (string) $value);
+    }
+
+    /**
+     * 验证表单令牌
+     * @access protected
+     * @param mixed     $value  字段值
+     * @param mixed     $rule  验证规则
+     * @param array     $data  数据
+     * @return bool
+     */
+    protected function token($value, $rule, $data)
+    {
+        $rule = !empty($rule) ? $rule : '__token__';
+        if (!isset($data[$rule]) || !Session::has($rule)) {
+            // 令牌数据无效
+            return false;
+        }
+
+        // 令牌验证
+        if (isset($data[$rule]) && Session::get($rule) === $data[$rule]) {
+            // 防止重复提交
+            Session::delete($rule); // 验证完成销毁session
+            return true;
+        }
+        // 开启TOKEN重置
+        Session::delete($rule);
+        return false;
     }
 
     // 获取错误信息
