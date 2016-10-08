@@ -15,8 +15,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <link rel="shortcut icon" type="image/x-icon" href="__ROOT__/favicon.ico">
     <link rel="apple-touch-icon" type="image/x-icon" href="__ROOT__/logo.png">
-    <link rel="stylesheet" type="text/css" href="__CUI__/css/cui.min.css">
-    <link rel="stylesheet" href="http://www.corethink.cn/Public/libs/ocicon/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="__LYUI__/css/lyui.min.css">
     <link rel="stylesheet" type="text/css" href="__HOME_CSS__/home.css">
     <link rel="stylesheet" type="text/css" href="__PUBLIC__/libs/animate/animate.min.css">
     <block name="style"></block>
@@ -36,7 +35,7 @@
     </script>
 </head>
 <body class="{$_page_name}">
-    <block name="full_wrap">
+    <div name="full_wrap">
         <block name="hook_page_header">
             <div class="clearfix hook hook-page-header">
                 {:hook('PageHeader')} <!-- 文档开始钩子 -->
@@ -146,7 +145,8 @@
                                             <?php endif; ?>
                                             <!-- 主导航 开始 -->
                                             <lingyun:nav_list name="vo" pid="0" group="main">
-                                                <php>if($vo['_child']):</php>
+                                                <php>
+                                                    if(isset($vo['_child'])):</php>
                                                     <li class="dropdown">
                                                         <a href="{$vo.href}" class="dropdown-toggle" data-toggle="dropdown" role="button">
                                                             {$vo.title} <span class="caret"></span>
@@ -266,13 +266,13 @@
                 {:hook('PageFooter')} <!-- 文档末尾钩子 -->
             </div>
         </block>
-    </block>
+    </div>
 
     <block name="full_script">
         <div class="clearfix full-script">
             <div class="container-fluid">
                 <include file="$_home_public_modal" /> <!-- 弹窗 -->
-                <script type="text/javascript" src="__CUI__/js/cui.min.js"></script>
+                <script type="text/javascript" src="__LYUI__/js/lyui.min.js"></script>
                 <script type="text/javascript" src="__HOME_JS__/home.js"></script>
                 <block name="script"></block>
                 {:C('WEB_SITE_STATISTICS')} <!-- 站点统计代码 -->

@@ -1,0 +1,62 @@
+.jumbotron {
+    position: relative;
+
+    >div {
+        position: relative;
+        z-index: 2;
+    }
+}
+.jumbotron-background:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url("../img/jumbotron-background.png") repeat center center;
+    opacity: 1;
+}
+.jumbotron-white {
+    background: #fff;
+}
+.jumbotron-primary {
+    color: #fff;
+    background: @brand-primary;
+
+    .small {
+        color: #fff;
+    }
+}
+.jumbotron-success {
+    color: #fff;
+    background: @brand-success;
+
+    .small {
+        color: #fff;
+    }
+}
+.jumbotron-info {
+    color: #fff;
+    background: @brand-info;
+
+    .small {
+        color: #fff;
+    }
+}
+.jumbotron-warning {
+    color: #fff;
+    background: @brand-warning;
+
+    .small {
+        color: #fff;
+    }
+}
+.jumbotron-danger {
+    color: #fff;
+    background: @brand-danger;
+
+    .small {
+        color: #fff;
+    }
+}

@@ -1,0 +1,78 @@
+// Button Outline
+// --------------------------------------------------
+
+.btn-default-outline {
+  .button-outline-variant(@btn-default-color);
+}
+.btn-primary-outline {
+  .button-outline-variant(@btn-primary-border);
+}
+.btn-success-outline {
+  .button-outline-variant(@btn-success-border);
+}
+.btn-info-outline {
+  .button-outline-variant(@btn-info-border);
+}
+.btn-warning-outline {
+  .button-outline-variant(@btn-warning-border);
+}
+.btn-danger-outline {
+  .button-outline-variant(@btn-danger-border);
+}
+
+
+//
+// Custom button radius sizes
+//
+
+.btn-pill {
+  padding-left: 1.25em;
+  padding-right: 1.25em;
+  border-radius: 1000em;
+}
+
+.btn-square {
+  border-radius: 0;
+}
+
+
+// More buttons
+.btn-more:after {
+  position: relative;
+  top: 1px;
+  content: '〉';
+  display: inline-block;
+  padding-left: .3em;
+  color: inherit;
+}
+
+
+//
+// Custom button groups
+//
+.btn-toolbar {
+  .btn-toolbar-item {
+    float: left;
+  }
+
+  > .btn-toolbar-item {
+    margin-left: 5px;
+  }
+}
+
+.btn-toolbar-divider {
+  float: left;
+  width: 1px;
+  height: 34px;
+  margin-left: 10px;
+  margin-right: 5px;
+  background-color: @btn-toolbar-divider-bg; // @eee
+}
+
+.btn-group-justified {
+  &.btn-group-justified-spaced {
+    width: calc(100% + 10px);
+    margin-left: -5px;
+    border-spacing: 5px;
+  }
+}

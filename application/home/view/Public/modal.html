@@ -59,11 +59,12 @@
             <div class="modal-body">
                 <!-- 后台管理员允许注册方式才会显示 -->
                 <php>
-                    if (D('Admin/Module')->where('name="User"')->find()) {
+                    if (D('Admin/Module')->where('name="User"')->find() && is_dir(APP_PATH . 'user/')) {
                         $allow_reg_type = C('user_config.allow_reg_type');
                         $user_type_list = D('User/Type')->where('status = 1')->select();
                     } else {
                         $allow_reg_type = array('username', 'email', 'mobile');
+                        $user_type_list = array();
                     }
                 </php>
                 <?php if(count($allow_reg_type) !== 1): ?>

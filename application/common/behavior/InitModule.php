@@ -45,14 +45,14 @@ class InitModule {
             $module_name_list
         );
         if (MODULE_MARK === 'Admin') {
-            $module_allow_list[] = 'Admin';
+            $module_allow_list[] = 'admin';
             $config['URL_MODEL'] = 3;
         }
         C('MODULE_ALLOW_LIST', $module_allow_list);
 
         // 如果是后台访问自动设置默认模块为Admin
         if (MODULE_MARK === 'Admin') {
-            C('DEFAULT_MODULE', 'Admin');
+            C('default_module', 'admin');
         }
 
         // API请求

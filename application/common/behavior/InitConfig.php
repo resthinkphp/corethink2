@@ -27,7 +27,8 @@ class InitConfig{
         define('MODULE_NAME', \think\Request::instance()->module());
         define('CONTROLLER_NAME', \think\Request::instance()->controller());
         define('ACTION_NAME', \think\Request::instance()->action());
-        define('IS_AJAX', ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')) ? true : false);
+        define('IS_POST', \think\Request::instance()->isPost());
+        define('IS_AJAX', \think\Request::instance()->isAjax());
 
         // 读取数据库中的配置
         $system_config = S('DB_CONFIG_DATA');
@@ -58,7 +59,7 @@ class InitConfig{
                 //     // 加载模块标签库
                 //     if ($val['taglib']) {
                 //         foreach ($val['taglib'] as $tag) {
-                //             $tag_path = APP_PATH.$val['module_name'].'/'.'TagLib'.'/'.$tag.'.class.php';
+                //             $tag_path = APP_FOLDER.$val['module_name'].'/'.'TagLib'.'/'.$tag.'.class.php';
                 //             if (is_file($tag_path)) {
                 //                 $system_config['TAGLIB_PRE_LOAD'][] = $val['module_name'].'\\TagLib\\'.$tag;
                 //             }
@@ -68,7 +69,7 @@ class InitConfig{
                 //     // 加载模块行为扩展
                 //     if ($val['behavior']) {
                 //         foreach ($val['behavior'] as $bhv) {
-                //             $bhv_path = APP_PATH.$val['module_name'].'/'.'Behavior'.'/'.$bhv.'Behavior.class.php';
+                //             $bhv_path = APP_FOLDER.$val['module_name'].'/'.'Behavior'.'/'.$bhv.'Behavior.class.php';
                 //             if (is_file($bhv_path)) {
                 //                 \Think\Hook::add('corethink_behavior', $val['module_name'].'\\Behavior\\'.$bhv.'Behavior');
                 //             }
@@ -123,9 +124,9 @@ class InitConfig{
         $system_config['TOP_HOME_PAGE'] = $system_config['TOP_HOME_DOMAIN'] . __ROOT__;
 
         // 如果是后台并且不是Admin模块则设置默认控制器层为Admin
-        if (MODULE_MARK === 'Admin' && MODULE_NAME !== 'Admin') {
-            $system_config['DEFAULT_C_LAYER'] = 'Admin';
-            $system_config['VIEW_PATH'] = APP_PATH.MODULE_NAME.'/View/Admin/';
+        if (MODULE_MARK === 'Admin' && MODULE_NAME !== '' && MODULE_NAME !== 'admin') {
+            $system_config['url_controller_layer'] = 'admin';
+            $system_config['VIEW_PATH'] = APP_FOLDER.MODULE_NAME.'/view/admin/';
         }
 
         // 静态资源域名
@@ -137,13 +138,13 @@ class InitConfig{
         $system_config['CURRENT_DOMAIN'] = $current_domain;
 
         // 模版参数配置
-        $system_config['TMPL_PARSE_STRING'] = C('TMPL_PARSE_STRING');  // 先取出配置文件中定义的否则会被覆盖
-        $system_config['TMPL_PARSE_STRING']['__PUBLIC__'] = $system_config['HOME_DOMAIN'].$system_config['TMPL_PARSE_STRING']['__PUBLIC__'];
-        $system_config['TMPL_PARSE_STRING']['__CUI__']    = $system_config['HOME_DOMAIN'].$system_config['TMPL_PARSE_STRING']['__CUI__'];
-        $system_config['TMPL_PARSE_STRING']['__IMG__']    = $current_domain.'/'.APP_PATH.MODULE_NAME.'/View/Public/img';
-        $system_config['TMPL_PARSE_STRING']['__CSS__']    = $current_domain.'/'.APP_PATH.MODULE_NAME.'/View/Public/css';
-        $system_config['TMPL_PARSE_STRING']['__JS__']     = $current_domain.'/'.APP_PATH.MODULE_NAME.'/View/Public/js';
-        $system_config['TMPL_PARSE_STRING']['__LIBS__']   = $current_domain.'/'.APP_PATH.MODULE_NAME.'/View/Public/libs';
+        $system_config['view_replace_str'] = C('view_replace_str');  // 先取出配置文件中定义的否则会被覆盖
+        $system_config['view_replace_str']['__PUBLIC__'] = $system_config['HOME_DOMAIN'].$system_config['view_replace_str']['__PUBLIC__'];
+        $system_config['view_replace_str']['__CUI__']    = $system_config['HOME_DOMAIN'].$system_config['view_replace_str']['__CUI__'];
+        $system_config['view_replace_str']['__IMG__']    = $current_domain.'/'.APP_FOLDER.MODULE_NAME.'/View/Public/img';
+        $system_config['view_replace_str']['__CSS__']    = $current_domain.'/'.APP_FOLDER.MODULE_NAME.'/View/Public/css';
+        $system_config['view_replace_str']['__JS__']     = $current_domain.'/'.APP_FOLDER.MODULE_NAME.'/View/Public/js';
+        $system_config['view_replace_str']['__LIBS__']   = $current_domain.'/'.APP_FOLDER.MODULE_NAME.'/View/Public/libs';
 
         // 获取当前主题的名称
         $current_theme = D('Admin/Theme')->where(array('current' => 1))->order('id asc')->value('name');

@@ -1,0 +1,58 @@
+// Navbar alignment
+//
+// Classes for helping space your content when certain navbars are present.
+
+// When a navbar is fixed to the top, add some padding
+.with-top-navbar {
+  padding-top: 50px;
+}
+
+// Fix up counters in the navbar
+.navbar-nav {
+  > li > a > .badge {
+    margin-left: 5px;
+  }
+}
+
+
+/* navbar img */
+.navbar .navbar-brand img {
+    height: 32px;
+    margin-top: -6px;
+}
+.navbar .navbar-nav>li>a>img {
+    height: 32px;
+    margin: -10px 0px;
+}
+.navbar .navbar-nav .dropdown-menu li>a>img {
+    height: 18px;
+    margin-top: -2px;
+}
+
+
+/* navbar-mini */
+.navbar-mini {
+    min-height: 30px;
+    margin-bottom: 0;
+    border: 0;
+}
+@media (min-width: 768px) {
+    .navbar-mini .navbar-brand {
+        height: 32px;
+        font-size: 14px;
+        height: 30px;
+        padding: 5px 15px;
+    }
+    .navbar-mini .navbar-nav>li>a {
+        padding: 6px 5px 4px 5px;
+        font-size:12px;
+    }
+    .navbar-mini .navbar-brand img {
+        height: 20px;
+        margin: 0px;
+    }
+    .navbar-mini .navbar-nav>li>a>img {
+        height: 20px;
+        margin: -3px 0 0;
+    }
+}

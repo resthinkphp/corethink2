@@ -74,8 +74,8 @@ class Module extends Model {
      * @author jry <598821125@qq.com>
      */
     public function getCurrentMenu($module_name = MODULE_NAME) {
-        $admin_menu = $this->getFieldByName($module_name, 'admin_menu');
-        $admin_menu = json_decode($admin_menu, true);
+        $admin_menu = $this->getByName($module_name);
+        $admin_menu = json_decode($admin_menu['admin_menu'], true);
         foreach ($admin_menu as $key => $val) {
             if (isset($val['url'])) {
                 $config_url  = U($val['url']);

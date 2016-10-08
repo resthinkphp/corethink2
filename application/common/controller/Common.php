@@ -54,17 +54,17 @@ class Common extends Controller {
             if (C('IS_WAP')) {
                 $parent_theme_path = './Theme/'.$current_theme.'/'.MODULE_NAME.'/'; //当前主题文件夹路径
                 $current_theme_path = './Theme/'.$current_theme.'/'.MODULE_NAME.'/Wap/'; //当前主题文件夹路径
-                $system_config['TMPL_PARSE_STRING'] = C('TMPL_PARSE_STRING');  // 先取出配置文件中定义的否则会被覆盖
+                $system_config['view_replace_str'] = C('view_replace_str');  // 先取出配置文件中定义的否则会被覆盖
                 if ($is_builder) {
                     // 前台Home模块静态资源路径及模板继承基本模板(Wap版)
                     $home_public_path_wap = './Theme/'.$current_theme.'/Home/Wap/Public';
                     if (is_dir($home_public_path_wap)) {
                         $system_config['HOME_PUBLIC_LAYOUT'] = $home_public_path_wap.'/layout.html';
                         $system_config['HOME_PUBLIC_MODAL']  = $home_public_path_wap.'/modal.html';
-                        $system_config['TMPL_PARSE_STRING']['__HOME_IMG__']   = $current_domain.'/'.$home_public_path_wap.'/img';
-                        $system_config['TMPL_PARSE_STRING']['__HOME_CSS__']   = $current_domain.'/'.$home_public_path_wap.'/css';
-                        $system_config['TMPL_PARSE_STRING']['__HOME_JS__']    = $current_domain.'/'.$home_public_path_wap.'/js';
-                        $system_config['TMPL_PARSE_STRING']['__HOME_LIBS__']  = $current_domain.'/'.$home_public_path_wap.'/libs';
+                        $system_config['view_replace_str']['__HOME_IMG__']   = $current_domain.'/'.$home_public_path_wap.'/img';
+                        $system_config['view_replace_str']['__HOME_CSS__']   = $current_domain.'/'.$home_public_path_wap.'/css';
+                        $system_config['view_replace_str']['__HOME_JS__']    = $current_domain.'/'.$home_public_path_wap.'/js';
+                        $system_config['view_replace_str']['__HOME_LIBS__']  = $current_domain.'/'.$home_public_path_wap.'/libs';
 
                         // Builder配置
                         if (MODULE_MARK === 'Home') {
@@ -106,10 +106,10 @@ class Common extends Controller {
                         // 各模块自带静态资源路径
                         $module_public_path_wap = './Theme/' . $current_theme . '/' . MODULE_NAME . '/Wap/Public';
                         if (is_dir($module_public_path_wap)) {
-                            $system_config['TMPL_PARSE_STRING']['__IMG__']  = $current_domain.'/'.$module_public_path_wap.'/img';
-                            $system_config['TMPL_PARSE_STRING']['__CSS__']  = $current_domain.'/'.$module_public_path_wap.'/css';
-                            $system_config['TMPL_PARSE_STRING']['__JS__']   = $current_domain.'/'.$module_public_path_wap.'/js';
-                            $system_config['TMPL_PARSE_STRING']['__LIBS__'] = $current_domain.'/'.$module_public_path_wap.'/libs';
+                            $system_config['view_replace_str']['__IMG__']  = $current_domain.'/'.$module_public_path_wap.'/img';
+                            $system_config['view_replace_str']['__CSS__']  = $current_domain.'/'.$module_public_path_wap.'/css';
+                            $system_config['view_replace_str']['__JS__']   = $current_domain.'/'.$module_public_path_wap.'/js';
+                            $system_config['view_replace_str']['__LIBS__'] = $current_domain.'/'.$module_public_path_wap.'/libs';
                         }
                     }
                 } else {
@@ -122,10 +122,10 @@ class Common extends Controller {
                             if (is_dir($home_public_path_wap)) {
                                 $system_config['HOME_PUBLIC_LAYOUT'] = $home_public_path_wap.'/layout.html';
                                 $system_config['HOME_PUBLIC_MODAL']  = $home_public_path_wap.'/modal.html';
-                                $system_config['TMPL_PARSE_STRING']['__HOME_IMG__']   = $current_domain.'/'.$home_public_path_wap.'/img';
-                                $system_config['TMPL_PARSE_STRING']['__HOME_CSS__']   = $current_domain.'/'.$home_public_path_wap.'/css';
-                                $system_config['TMPL_PARSE_STRING']['__HOME_JS__']    = $current_domain.'/'.$home_public_path_wap.'/js';
-                                $system_config['TMPL_PARSE_STRING']['__HOME_LIBS__']  = $current_domain.'/'.$home_public_path_wap.'/libs';
+                                $system_config['view_replace_str']['__HOME_IMG__']   = $current_domain.'/'.$home_public_path_wap.'/img';
+                                $system_config['view_replace_str']['__HOME_CSS__']   = $current_domain.'/'.$home_public_path_wap.'/css';
+                                $system_config['view_replace_str']['__HOME_JS__']    = $current_domain.'/'.$home_public_path_wap.'/js';
+                                $system_config['view_replace_str']['__HOME_LIBS__']  = $current_domain.'/'.$home_public_path_wap.'/libs';
 
                                 // Builder配置
                                 if (MODULE_MARK === 'Home') {
@@ -158,10 +158,10 @@ class Common extends Controller {
                                     if (is_file($module_public_path_wap . '/layout.html') && MODULE_NAME !== 'Home') {
                                         $system_config['HOME_PUBLIC_LAYOUT'] = $module_public_path_wap . '/layout.html';
                                     }
-                                    $system_config['TMPL_PARSE_STRING']['__IMG__']  = $current_domain.'/'.$module_public_path_wap.'/img';
-                                    $system_config['TMPL_PARSE_STRING']['__CSS__']  = $current_domain.'/'.$module_public_path_wap.'/css';
-                                    $system_config['TMPL_PARSE_STRING']['__JS__']   = $current_domain.'/'.$module_public_path_wap.'/js';
-                                    $system_config['TMPL_PARSE_STRING']['__LIBS__'] = $current_domain.'/'.$module_public_path_wap.'/libs';
+                                    $system_config['view_replace_str']['__IMG__']  = $current_domain.'/'.$module_public_path_wap.'/img';
+                                    $system_config['view_replace_str']['__CSS__']  = $current_domain.'/'.$module_public_path_wap.'/css';
+                                    $system_config['view_replace_str']['__JS__']   = $current_domain.'/'.$module_public_path_wap.'/js';
+                                    $system_config['view_replace_str']['__LIBS__'] = $current_domain.'/'.$module_public_path_wap.'/libs';
                                 }
                             }
                         }
@@ -172,17 +172,17 @@ class Common extends Controller {
             if (C('IS_WAP')) {
                 $parent_theme_path = APP_PATH.MODULE_NAME.'/View/'; //当前主题文件夹路径
                 $current_theme_path = APP_PATH.MODULE_NAME.'/View/Wap/'; //当前主题文件夹路径
-                $system_config['TMPL_PARSE_STRING'] = C('TMPL_PARSE_STRING');  // 先取出配置文件中定义的否则会被覆盖
+                $system_config['view_replace_str'] = C('view_replace_str');  // 先取出配置文件中定义的否则会被覆盖
                 if ($is_builder) {
                     // 前台Home模块静态资源路径及模板继承基本模板(Wap版)
                     $home_public_path_wap = APP_PATH.'/Home/View/Wap/Public';
                     if (is_dir($home_public_path_wap)) {
                         $system_config['HOME_PUBLIC_LAYOUT'] = $home_public_path_wap.'/layout.html';
                         $system_config['HOME_PUBLIC_MODAL']  = $home_public_path_wap.'/modal.html';
-                        $system_config['TMPL_PARSE_STRING']['__HOME_IMG__']   = $current_domain.'/'.$home_public_path_wap.'/img';
-                        $system_config['TMPL_PARSE_STRING']['__HOME_CSS__']   = $current_domain.'/'.$home_public_path_wap.'/css';
-                        $system_config['TMPL_PARSE_STRING']['__HOME_JS__']    = $current_domain.'/'.$home_public_path_wap.'/js';
-                        $system_config['TMPL_PARSE_STRING']['__HOME_LIBS__']  = $current_domain.'/'.$home_public_path_wap.'/libs';
+                        $system_config['view_replace_str']['__HOME_IMG__']   = $current_domain.'/'.$home_public_path_wap.'/img';
+                        $system_config['view_replace_str']['__HOME_CSS__']   = $current_domain.'/'.$home_public_path_wap.'/css';
+                        $system_config['view_replace_str']['__HOME_JS__']    = $current_domain.'/'.$home_public_path_wap.'/js';
+                        $system_config['view_replace_str']['__HOME_LIBS__']  = $current_domain.'/'.$home_public_path_wap.'/libs';
 
                         // Builder配置
                         if (MODULE_MARK === 'Home') {
@@ -224,10 +224,10 @@ class Common extends Controller {
                         // 各模块自带静态资源路径
                         $module_public_path_wap = APP_PATH . MODULE_NAME . '/View/Wap/Public';
                         if (is_dir($module_public_path_wap)) {
-                            $system_config['TMPL_PARSE_STRING']['__IMG__']  = $current_domain.'/'.$module_public_path_wap.'/img';
-                            $system_config['TMPL_PARSE_STRING']['__CSS__']  = $current_domain.'/'.$module_public_path_wap.'/css';
-                            $system_config['TMPL_PARSE_STRING']['__JS__']   = $current_domain.'/'.$module_public_path_wap.'/js';
-                            $system_config['TMPL_PARSE_STRING']['__LIBS__'] = $current_domain.'/'.$module_public_path_wap.'/libs';
+                            $system_config['view_replace_str']['__IMG__']  = $current_domain.'/'.$module_public_path_wap.'/img';
+                            $system_config['view_replace_str']['__CSS__']  = $current_domain.'/'.$module_public_path_wap.'/css';
+                            $system_config['view_replace_str']['__JS__']   = $current_domain.'/'.$module_public_path_wap.'/js';
+                            $system_config['view_replace_str']['__LIBS__'] = $current_domain.'/'.$module_public_path_wap.'/libs';
                         }
                     }
                 } else {
@@ -240,10 +240,10 @@ class Common extends Controller {
                             if (is_dir($home_public_path_wap)) {
                                 $system_config['HOME_PUBLIC_LAYOUT'] = $home_public_path_wap.'/layout.html';
                                 $system_config['HOME_PUBLIC_MODAL']  = $home_public_path_wap.'/modal.html';
-                                $system_config['TMPL_PARSE_STRING']['__HOME_IMG__']   = $current_domain.'/'.$home_public_path_wap.'/img';
-                                $system_config['TMPL_PARSE_STRING']['__HOME_CSS__']   = $current_domain.'/'.$home_public_path_wap.'/css';
-                                $system_config['TMPL_PARSE_STRING']['__HOME_JS__']    = $current_domain.'/'.$home_public_path_wap.'/js';
-                                $system_config['TMPL_PARSE_STRING']['__HOME_LIBS__']  = $current_domain.'/'.$home_public_path_wap.'/libs';
+                                $system_config['view_replace_str']['__HOME_IMG__']   = $current_domain.'/'.$home_public_path_wap.'/img';
+                                $system_config['view_replace_str']['__HOME_CSS__']   = $current_domain.'/'.$home_public_path_wap.'/css';
+                                $system_config['view_replace_str']['__HOME_JS__']    = $current_domain.'/'.$home_public_path_wap.'/js';
+                                $system_config['view_replace_str']['__HOME_LIBS__']  = $current_domain.'/'.$home_public_path_wap.'/libs';
 
                                 // Builder配置
                                 if (MODULE_MARK === 'Home') {

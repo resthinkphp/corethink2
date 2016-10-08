@@ -1,0 +1,137 @@
+// 侧边导航
+.navside {
+    position: relative;
+    margin-bottom: @navbar-margin-bottom;
+    border: 1px solid transparent;
+
+    // Prevent floats from breaking the navbar
+    &:extend(.clearfix all);
+
+    @media (min-width: @grid-float-breakpoint) {
+        border-radius: @navbar-border-radius;
+    }
+    .navside-header {
+        padding: 35px 20px;
+    }
+    .navside-nav {
+        &.navside-first>li>a {
+            border-top: 1px solid transparent;
+        }
+        &.navside-first>li:last-child>a {
+            border-bottom: 1px solid transparent;
+        }
+        &.navside-second>li>a {
+            padding: 7px 10px;
+            padding-left: 42px;
+        }
+        &.navside-third>li>a {
+            padding-left: 60px;
+        }
+    }
+}
+
+// 默认颜色
+.navside-default {
+    background: @navbar-default-bg;
+    border-color: @navbar-default-border;
+
+    .arrow {
+        float: right;
+        color: #777;
+    }
+    .arrow:before {
+        content: "\f104";
+    }
+    a.collapsed > .arrow:before {
+        content: "\f107";
+    }
+
+    .navside-nav {
+        &.navside-first>li>a {
+            border-color: @navbar-default-border;
+        }
+        &.navside-first>li:first-child >a {
+            border-top: 0;
+        }
+        &.navside-second {
+            background: #fff;
+        }
+        > li > a {
+            color: @navbar-default-link-color;
+
+            &:hover,
+            &:focus {
+                color: @navbar-default-link-hover-color;
+                background-color: @navbar-default-link-hover-bg;
+            }
+        }
+        > .active > a {
+            &,
+            &:hover,
+            &:focus {
+                color: @navbar-default-link-active-color;
+                background-color: @navbar-default-link-active-bg;
+            }
+        }
+        > .disabled > a {
+            &,
+            &:hover,
+            &:focus {
+                color: @navbar-default-link-disabled-color;
+                background-color: @navbar-default-link-disabled-bg;
+            }
+        }
+    }
+}
+
+
+// 反色
+.navside-inverse {
+    background-color: @navbar-inverse-bg;
+    border-color: @navbar-inverse-border;
+
+    .arrow {
+        float: right;
+        color: #777;
+    }
+    .arrow:before {
+        content: "\f107";
+    }
+    a.collapsed > .arrow:before {
+        content: "\f104";
+    }
+
+    .navside-nav {
+        &.navside-first>li>a {
+            border-color: @navbar-inverse-border;
+        }
+        &.navside-first>li:first-child >a {
+            border-top: 0;
+        }
+        > li > a {
+            color: @navbar-inverse-link-color;
+
+            &:hover,
+            &:focus {
+                color: @navbar-inverse-link-hover-color;
+                background-color: @navbar-inverse-link-hover-bg;
+            }
+        }
+        > .active > a {
+            &,
+            &:hover,
+            &:focus {
+                color: @navbar-inverse-link-active-color;
+                background-color: @navbar-inverse-link-active-bg;
+            }
+        }
+        > .disabled > a {
+            &,
+            &:hover,
+            &:focus {
+                color: @navbar-inverse-link-disabled-color;
+                background-color: @navbar-inverse-link-disabled-bg;
+            }
+        }
+    }
+}

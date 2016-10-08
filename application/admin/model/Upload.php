@@ -71,7 +71,7 @@ class Upload extends Model {
         if (in_array($result['ext'], array('jpg', 'jpeg', 'png', 'gif', 'bmp') )) {
             $result['show'] = '<img class="picture" src="'.$result['real_path'].'">';
         } else {
-            $result['show'] = '<img class="picture" src="'.C('TMPL_PARSE_STRING.__HOME_IMG__').'/file/'.$result['ext'].'.png">';
+            $result['show'] = '<img class="picture" src="'.C('view_replace_str.__HOME_IMG__').'/file/'.$result['ext'].'.png">';
         }
     }
 
@@ -101,10 +101,10 @@ class Upload extends Model {
         if (!$url) {
             switch ($type) {
                 case 'default' : //默认图片
-                    $url = C('TMPL_PARSE_STRING.__HOME_IMG__').'/default/default.gif';
+                    $url = C('view_replace_str.__HOME_IMG__').'/default/default.gif';
                     break;
                 case 'avatar' : //用户头像
-                    $url = C('TMPL_PARSE_STRING.__HOME_IMG__').'/default/avatar.png';
+                    $url = C('view_replace_str.__HOME_IMG__').'/default/avatar.png';
                     break;
                 default: //文档列表默认图片
                     break;

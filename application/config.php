@@ -14,7 +14,7 @@ $_config =  [
      * 任何情况下使用OpenCMF均需获取官方授权，违者追究法律责任，授权联系：admin@opencmf.cn
      */
     'PRODUCT_NAME'    => 'CoreThink',                      // 产品名称
-    'PRODUCT_LOGO'    => '<b><span class="open" style="color: #a5aeb4;">Core</span><span class="Think" style="color: #2699ed;">CMF</span></b>',  // 产品Logo
+    'PRODUCT_LOGO'    => '<b><span class="open" style="color: #a5aeb4;">Core</span><span class="Think" style="color: #2699ed;">Think2</span></b>',  // 产品Logo
     'CURRENT_VERSION' => '2.0.0',                        // 当前版本号
     'DEVELOP_VERSION' => 'beta1',                        // 开发版本号
     'BUILD_VERSION'   => '201607181550',                 // 编译标记
@@ -37,31 +37,17 @@ $_config =  [
     'DATA_CRYPT_TYPE'       => 'Think',
     // 允许访问模块
     'module_allow_list'       => ['home', 'admin', 'install'],
-    // 模板相关配置
-    'TMPL_PARSE_STRING'  => array(
-        '__ROOT__'       => __ROOT__,
-        '__PUBLIC__'     => __ROOT__.'/Public',
-        '__LYUI__'       => __ROOT__.'/Public/libs/lyui/dist',
-        '__CUI__'        => __ROOT__.'/Public/libs/lyui/dist',
-        '__ADMIN_IMG__'  => __ROOT__.'/'.APP_PATH.'admin/view/public/img',
-        '__ADMIN_CSS__'  => __ROOT__.'/'.APP_PATH.'admin/view/public/css',
-        '__ADMIN_JS__'   => __ROOT__.'/'.APP_PATH.'admin/view/public/js',
-        '__ADMIN_LIBS__' => __ROOT__.'/'.APP_PATH.'admin/view/public/libs',
-        '__HOME_IMG__'   => __ROOT__.'/'.APP_PATH.'home/view/public/img',
-        '__HOME_CSS__'   => __ROOT__.'/'.APP_PATH.'home/view/public/css',
-        '__HOME_JS__'    => __ROOT__.'/'.APP_PATH.'home/view/public/js',
-        '__HOME_LIBS__'  => __ROOT__.'/'.APP_PATH.'home/view/public/libs',
-    ),
+
     // 系统功能模板
-    'USER_CENTER_SIDE'    => APP_PATH.'user/view/index/side.html',
-    'USER_CENTER_INFO'    => APP_PATH.'user/view/index/info.html',
-    'USER_CENTER_FORM'    => APP_PATH.'user/view/builder/form.html',
-    'USER_CENTER_LIST'    => APP_PATH.'user/view/builder/list.html',
-    'HOME_PUBLIC_LAYOUT'  => APP_PATH.'home/view/public/layout.html',
-    'ADMIN_PUBLIC_LAYOUT' => APP_PATH.'Admin/view/public/layout.html',
-    'HOME_PUBLIC_MODAL'   => APP_PATH.'Home/view/public/modal.html',
-    'LISTBUILDER_LAYOUT'  => APP_PATH.'Common/builder/listbuilder.html',
-    'FORMBUILDER_LAYOUT'  => APP_PATH.'Common/builder/formbuilder.html',
+    'USER_CENTER_SIDE'    => APP_FOLDER.'user/view/index/side.html',
+    'USER_CENTER_INFO'    => APP_FOLDER.'user/view/index/info.html',
+    'USER_CENTER_FORM'    => APP_FOLDER.'user/view/builder/form.html',
+    'USER_CENTER_LIST'    => APP_FOLDER.'user/view/builder/list.html',
+    'HOME_PUBLIC_LAYOUT'  => APP_FOLDER.'home/view/public/layout.html',
+    'ADMIN_PUBLIC_LAYOUT' => APP_FOLDER.'admin/view/public/layout.html',
+    'HOME_PUBLIC_MODAL'   => APP_FOLDER.'home/view/public/modal.html',
+    'LISTBUILDER_LAYOUT'  => APP_FOLDER.'common/builder/listbuilder.html',
+    'FORMBUILDER_LAYOUT'  => APP_FOLDER.'common/builder/formbuilder.html',
 
     // 应用命名空间
     'app_namespace'          => 'app',
@@ -78,7 +64,7 @@ $_config =  [
     // 扩展配置文件
     'extra_config_list'      => ['route', 'validate'],
     // 扩展函数文件
-    'extra_file_list'        => [THINK_PATH . 'helper' . EXT, APP_PATH. 'helper' . EXT],
+    'extra_file_list'        => [THINK_PATH . 'helper' . EXT, APP_FOLDER. 'helper' . EXT],
     // 默认输出类型
     'default_return_type'    => 'html',
     // 默认AJAX 数据返回格式,可选json xml ...
@@ -176,7 +162,20 @@ $_config =  [
     ],
 
     // 视图输出字符串内容替换
-    'view_replace_str'       => [],
+    'view_replace_str'       => array(
+        '__ROOT__'       => __ROOT__,
+        '__PUBLIC__'     => __ROOT__.'/Public',
+        '__LYUI__'       => __ROOT__.'/Public/libs/lyui/dist',
+        '__CUI__'        => __ROOT__.'/Public/libs/lyui/dist',
+        '__ADMIN_IMG__'  => __ROOT__.'/'.APP_FOLDER.'admin/view/public/img',
+        '__ADMIN_CSS__'  => __ROOT__.'/'.APP_FOLDER.'admin/view/public/css',
+        '__ADMIN_JS__'   => __ROOT__.'/'.APP_FOLDER.'admin/view/public/js',
+        '__ADMIN_LIBS__' => __ROOT__.'/'.APP_FOLDER.'admin/view/public/libs',
+        '__HOME_IMG__'   => __ROOT__.'/'.APP_FOLDER.'home/view/public/img',
+        '__HOME_CSS__'   => __ROOT__.'/'.APP_FOLDER.'home/view/public/css',
+        '__HOME_JS__'    => __ROOT__.'/'.APP_FOLDER.'home/view/public/js',
+        '__HOME_LIBS__'  => __ROOT__.'/'.APP_FOLDER.'home/view/public/libs',
+    ),
     // 默认跳转页面对应的模板文件
     'dispatch_success_tmpl'  => THINK_PATH . 'tpl' . DS . 'dispatch_jump.tpl',
     'dispatch_error_tmpl'    => THINK_PATH . 'tpl' . DS . 'dispatch_jump.tpl',
@@ -366,5 +365,5 @@ if (is_file('./data/db.php')) {
 return array_merge(
     $_config,                                      // 系统全局默认配置
     $db_config,                                    // 数据库配置数组
-    include APP_PATH.'common/builder/config.php'   // 包含Builder配置
+    include APP_FOLDER.'common/builder/config.php'   // 包含Builder配置
 );

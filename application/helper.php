@@ -191,3 +191,37 @@ if (!function_exists('is_ssl')) {
         return $request->isSsl();
     }
 }
+
+if (!function_exists('I')) {
+    /**
+     * 获取输入数据 支持默认值和过滤
+     * @param string    $key 获取的变量名
+     * @param mixed     $default 默认值
+     * @param string    $filter 过滤方法
+     * @return mixed
+     */
+    function I($key = '', $default = null, $filter = null)
+    {
+        if (0 === strpos($key, '?')) {
+            $key = substr($key, 1);
+            $has = true;
+        }
+        if ($pos = strpos($key, '.')) {
+            // 指定参数来源
+            $method = substr($key, 0, $pos);
+            if (in_array($method, ['get', 'post', 'put', 'patch', 'delete', 'param', 'request', 'session', 'cookie', 'server', 'env', 'path', 'file'])) {
+                $key = substr($key, $pos + 1);
+            } else {
+                $method = 'param';
+            }
+        } else {
+            // 默认为自动判断
+            $method = 'param';
+        }
+        if (isset($has)) {
+            return request()->has($key, $method, $default);
+        } else {
+            return request()->$method($key, $default, $filter);
+        }
+    }
+}

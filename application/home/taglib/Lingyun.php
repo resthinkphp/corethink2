@@ -20,7 +20,7 @@ class Lingyun extends TagLib {
     protected $tags = array(
         'sql'   => array('attr' => 'sql,result', 'close' => 0),             //SQL查询
         'nav_list'    => array('attr' => 'name,pid,group', 'close' => 1),         //导航列表
-        'slider_ist' => array('attr' => 'name,limit,page,order', 'close' => 1),  //幻灯列表
+        'slider_list' => array('attr' => 'name,limit,page,order', 'close' => 1),  //幻灯列表
         'post_ist'   => array('attr' => 'name,limit,page,order,cid', 'close' => 1),  //文章列表
     );
 
@@ -58,9 +58,9 @@ class Lingyun extends TagLib {
      */
     public function tagSlider_list($tag, $content) {
         $name   = $tag['name'];
-        $limit  = $tag['limit'] ? : 10;
-        $page   = $tag['page'] ? : 1;
-        $order  = $tag['order'] ? : 'sort desc,id desc';
+        $limit  = isset($tag['limit']) ? : 10;
+        $page   = isset($tag['page']) ? : 1;
+        $order  = isset($tag['order']) ? : 'sort desc,id desc';
         $parse  = '<?php ';
         $parse .= '$map["status"] = array("eq", "1");';
         $parse .= '$__SLIDER_LIST__ = D("Admin/Slider")->getList('.$limit.', '.$page.', "'.$order.'", $map);';

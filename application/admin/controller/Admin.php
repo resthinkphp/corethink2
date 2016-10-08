@@ -26,7 +26,7 @@ class Admin extends Common {
     protected function _initialize() {
         // 登录检测
         if (!is_login()) { //还没登录跳转到登录页面
-            $this->redirect('Admin/Public/login');
+            $this->redirect('Admin/Login/login');
         }
 
         // 权限检测

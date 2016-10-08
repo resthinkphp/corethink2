@@ -165,7 +165,10 @@ class Nav extends Model {
         $map['status'] = array('eq', 1);
         $map['group']  = array('eq', $group);
         $tree = new Tree();
-        $list = $this->where($map)->order('sort asc,id asc')->select();
+        $list = $this->where($map)->order('sort asc,id asc')->fetchClass('\think\Collection')->select()->toArray();
+        foreach ($list as $key => &$val) {
+            $val['href'] = $this->getHrefAttr($val['type'], $val);
+        }
 
         // 返回当前导航的子导航树
         $list = $tree->list_to_tree(

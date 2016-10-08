@@ -1,0 +1,31 @@
+// 优化、修复carousel
+.carousel-control {
+    width: 10%;
+    background: none !important;
+    display: none;
+
+    .fa-chevron-left,
+    .fa-chevron-right,
+    .icon-next,
+    .icon-prev {
+        width: 30px;
+        height: 30px;
+        margin-top: -15px;
+        font-size: 30px;
+        position: absolute;
+        top: 50%;
+        z-index: 5;
+        display: inline-block;
+    }
+    .fa-chevron-left,
+    .icon-prev {
+        margin-left: -30px
+    }
+    .fa-chevron-right,
+    .icon-next {
+        margin-right: -30px
+    }
+}
+.carousel:hover .carousel-control {
+    display: block;
+}

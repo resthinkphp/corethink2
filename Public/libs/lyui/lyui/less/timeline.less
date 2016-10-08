@@ -1,0 +1,236 @@
+/* 时间轴 */
+.vertical-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0px;
+    left: 18px;
+    width: 4px;
+    height: 100%;
+    background: #f1f1f1;
+}
+.vertical-timeline {
+    position: relative;
+    padding: 0;
+    margin-top: 2em;
+    margin-bottom: 2em;
+
+    .vertical-timeline-block {
+        position: relative;
+        margin: 2em 0;
+
+        :first-child {
+            margin-top: 0;
+        }
+        :last-child {
+            margin-bottom: 0;
+        }
+        :after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        .vertical-timeline-icon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 16px;
+            border: 3px solid #f1f1f1;
+            text-align: center;
+
+            i {
+                display: block;
+                width: 24px;
+                height: 24px;
+                position: relative;
+                left: 50%;
+                top: 50%;
+                margin-left: -12px;
+                margin-top: -9px;
+            }
+        }
+        .vertical-timeline-content {
+            position: relative;
+            margin-left: 60px;
+            background: white;
+            border-radius: 0.25em;
+            padding: 1em;
+
+             h2 {
+                font-weight: 400;
+                margin-top: 4px;
+            }
+             p {
+                color: @gray;
+                margin: 1em 0;
+                line-height: 1.6;
+            }
+            .vertical-date {
+                float: left;
+                font-weight: 500;
+
+                small {
+                    color: #1ab394;
+                    font-weight: 400;
+                }
+            }
+            .btn {
+                float: right;
+            }
+            ::before {
+                content: '';
+                position: absolute;
+                top: 16px;
+                right: 100%;
+                height: 0;
+                width: 0;
+                border: 7px solid transparent;
+                border-right: 7px solid white;
+            }
+            :after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+        }
+        :nth-child(2n) {
+            .vertical-timeline-content:before {
+                border-color: transparent #f5f5f5 transparent transparent;
+            }
+        }
+    }
+}
+@media only screen and (min-width: @screen-sm) {
+    .vertical-timeline-content {
+        h2 {
+            font-size: 18px;
+        }
+        p {
+            font-size: 13px;
+        }
+    }
+}
+
+// 背景亮色时间轴
+.vertical-timeline.light-timeline:before {
+    background: #e7eaec;
+}
+
+// 背景暗色时间轴
+.dark-timeline {
+    .vertical-timeline-block  {
+        .vertical-timeline-content {
+            background: #f5f5f5;
+
+            :before {
+                border-color: transparent #f5f5f5 transparent transparent ;
+            }
+        }
+    }  
+}
+.dark-timeline.center-orientation {
+    .vertical-timeline-content {
+        background: #f5f5f5;
+
+        :before {
+            border-color: transparent transparent transparent #f5f5f5;
+        }
+    }
+    .vertical-timeline-block:nth-child(2n) {
+        .vertical-timeline-content:before {
+            border-color: transparent #f5f5f5 transparent transparent;
+        }
+    }
+}
+
+// 左右两栏时间轴
+@media only screen and (max-width: @screen-lg) {
+    .center-orientation.dark-timeline .vertical-timeline-content:before {
+        border-color: transparent #f5f5f5 transparent transparent;
+    }
+}
+
+@media only screen and (min-width: @screen-lg) {
+    .vertical-timeline.center-orientation {
+        margin-top: 3em;
+        margin-bottom: 3em;
+        :before {
+            left: 50%;
+            margin-left: -2px;
+        }
+        .vertical-timeline-block {
+            margin: 4em 0;
+
+            :first-child {
+                margin-top: 0;
+            }
+            :last-child {
+                margin-bottom: 0;
+            }
+            .vertical-timeline-icon {
+                width: 50px;
+                height: 50px;
+                left: 50%;
+                margin-left: -25px;
+                -webkit-transform: translateZ(0);
+                -webkit-backface-visibility: hidden;
+                font-size: 19px;
+
+                 i {
+                    margin-left: -12px;
+                    margin-top: -10px;
+                }
+            }
+            .cssanimations .vertical-timeline-icon.is-hidden {
+                visibility: hidden;
+            }
+            .vertical-timeline-content {
+                margin-left: 0;
+                padding: 1.6em;
+                width: 45%;
+
+                ::before {
+                    top: 24px;
+                    left: 100%;
+                    border-color: transparent;
+                    border-left-color: white;
+                }
+                .btn {
+                    float: left;
+                }
+                .vertical-date {
+                    position: absolute;
+                    width: 100%;
+                    left: 122%;
+                    top: 2px;
+                    font-size: 14px;
+                }
+            }
+        }
+        .vertical-timeline-block:nth-child(even) .vertical-timeline-content {
+            float: right;
+            
+            .btn {
+                float: right;
+            }
+            .vertical-date {
+                left: auto;
+                right: 122%;
+                text-align: right;
+            }
+        }
+        .vertical-timeline-block:nth-child(even) .vertical-timeline-content::before {
+            top: 24px;
+            left: auto;
+            right: 100%;
+            border-color: transparent;
+            border-right-color: white;
+        }
+    }
+    .cssanimations .vertical-timeline-content.is-hidden {
+        visibility: hidden;
+    }
+}
