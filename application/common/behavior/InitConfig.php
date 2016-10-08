@@ -24,9 +24,6 @@ class InitConfig{
         if(defined('BIND_MODULE') && BIND_MODULE === 'Install') return;
 
         // define
-        define('MODULE_NAME', \think\Request::instance()->module());
-        define('CONTROLLER_NAME', \think\Request::instance()->controller());
-        define('ACTION_NAME', \think\Request::instance()->action());
         define('IS_POST', \think\Request::instance()->isPost());
         define('IS_AJAX', \think\Request::instance()->isAjax());
 
@@ -124,10 +121,10 @@ class InitConfig{
         $system_config['TOP_HOME_PAGE'] = $system_config['TOP_HOME_DOMAIN'] . __ROOT__;
 
         // 如果是后台并且不是Admin模块则设置默认控制器层为Admin
-        if (MODULE_MARK === 'Admin' && MODULE_NAME !== '' && MODULE_NAME !== 'admin') {
-            $system_config['url_controller_layer'] = 'admin';
-            $system_config['VIEW_PATH'] = APP_FOLDER.MODULE_NAME.'/view/admin/';
-        }
+        // if (MODULE_MARK === 'Admin' && MODULE_NAME !== '' && MODULE_NAME !== 'admin') {
+        //     $system_config['url_controller_layer'] = 'admin';
+        //     $system_config['VIEW_PATH'] = APP_FOLDER.MODULE_NAME.'/view/admin/';
+        // }
 
         // 静态资源域名
         if ($system_config['STATIC_DOMAIN']) {
@@ -136,15 +133,6 @@ class InitConfig{
             $current_domain = $system_config['HOME_PAGE'];
         }
         $system_config['CURRENT_DOMAIN'] = $current_domain;
-
-        // 模版参数配置
-        $system_config['view_replace_str'] = C('view_replace_str');  // 先取出配置文件中定义的否则会被覆盖
-        $system_config['view_replace_str']['__PUBLIC__'] = $system_config['HOME_DOMAIN'].$system_config['view_replace_str']['__PUBLIC__'];
-        $system_config['view_replace_str']['__CUI__']    = $system_config['HOME_DOMAIN'].$system_config['view_replace_str']['__CUI__'];
-        $system_config['view_replace_str']['__IMG__']    = $current_domain.'/'.APP_FOLDER.MODULE_NAME.'/View/Public/img';
-        $system_config['view_replace_str']['__CSS__']    = $current_domain.'/'.APP_FOLDER.MODULE_NAME.'/View/Public/css';
-        $system_config['view_replace_str']['__JS__']     = $current_domain.'/'.APP_FOLDER.MODULE_NAME.'/View/Public/js';
-        $system_config['view_replace_str']['__LIBS__']   = $current_domain.'/'.APP_FOLDER.MODULE_NAME.'/View/Public/libs';
 
         // 获取当前主题的名称
         $current_theme = D('Admin/Theme')->where(array('current' => 1))->order('id asc')->value('name');

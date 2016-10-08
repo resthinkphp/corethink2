@@ -275,7 +275,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>MYSQL版本</td>
-                                                    <td><php>$system_info_mysql = M()->query("select version() as v;");</php>{$system_info_mysql.0.v}</td>
+                                                    <td><php>$system_info_mysql = \think\Db::query("select version() as v;");</php>{$system_info_mysql.0.v}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>上传限制</td>

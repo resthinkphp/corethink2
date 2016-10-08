@@ -24,6 +24,8 @@ class Admin extends Common {
      * @author jry <598821125@qq.com>
      */
     protected function _initialize() {
+        parent::_initialize();
+
         // 登录检测
         if (!is_login()) { //还没登录跳转到登录页面
             $this->redirect('Admin/Login/login');
@@ -56,7 +58,10 @@ class Admin extends Common {
      * @param $script 严格模式要求处理的纪录的uid等于当前登陆用户UID
      * @author jry <598821125@qq.com>
      */
-    public function setStatus($model = CONTROLLER_NAME, $script = false) {
+    public function setStatus($model, $script = false) {
+        if (!$model) {
+            $model = \think\Request::instance()->controller();
+        }
         $ids    = I('request.ids');
         $status = I('request.status');
         if (empty($ids)) {

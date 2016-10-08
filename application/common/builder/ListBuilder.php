@@ -64,7 +64,7 @@ class ListBuilder extends CommonController {
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '新增';
                 $my_attribute['class'] = 'btn btn-primary';
-                $my_attribute['href']  = U(MODULE_NAME.'/'.CONTROLLER_NAME.'/add');
+                //$my_attribute['href']  = U(MODULE_NAME.'/'.CONTROLLER_NAME.'/add');
 
                 /**
                 * 如果定义了属性数组则与默认的进行合并

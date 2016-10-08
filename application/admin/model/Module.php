@@ -74,6 +74,7 @@ class Module extends Model {
      * @author jry <598821125@qq.com>
      */
     public function getCurrentMenu($module_name = MODULE_NAME) {
+        $result = '';
         $admin_menu = $this->getByName($module_name);
         $admin_menu = json_decode($admin_menu['admin_menu'], true);
         foreach ($admin_menu as $key => $val) {
@@ -95,7 +96,7 @@ class Module extends Model {
      */
     public function getAllMenu() {
         $menu_list = S('MENU_LIST');
-        if (!$menu_list || APP_DEBUG === true) {
+        if (!$menu_list || C('APP_DEBUG') === true) {
             $con['status'] = 1;
             $system_module_list = $this->where($con)->order('sort asc, id asc')->select();
             $tree = new tree();
@@ -109,7 +110,7 @@ class Module extends Model {
 
             // 如果模块顶级菜单配置了top字段则移动菜单至top所指的模块下边
             foreach ($menu_list as $key => &$value) {
-                if ($value['top']) {
+                if (isset($value['top'])) {
                     if ($menu_list[$value['top']]) {
                         $menu_list[$value['top']]['_child'] = array_merge(
                             $menu_list[$value['top']]['_child'],

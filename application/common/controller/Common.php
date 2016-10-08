@@ -14,6 +14,28 @@ use think\Controller;
  */
 class Common extends Controller {
     /**
+     * 初始化方法
+     * @author jry <598821125@qq.com>
+     */
+    protected function _initialize() {
+        parent::_initialize();
+
+        // 模块、控制器、模型
+        define('MODULE_NAME', \think\Request::instance()->module());
+        define('CONTROLLER_NAME', \think\Request::instance()->controller());
+        define('ACTION_NAME', \think\Request::instance()->action());
+
+        // 模版参数配置
+        $system_config['view_replace_str'] = C('view_replace_str');  // 先取出配置文件中定义的否则会被覆盖
+        $system_config['view_replace_str']['__PUBLIC__'] = C('HOME_DOMAIN').$system_config['view_replace_str']['__PUBLIC__'];
+        $system_config['view_replace_str']['__CUI__']    = C('HOME_DOMAIN').$system_config['view_replace_str']['__CUI__'];
+        $system_config['view_replace_str']['__IMG__']    = C('CURRENT_DOMAIN').'/'.APP_FOLDER.MODULE_NAME.'/View/Public/img';
+        $system_config['view_replace_str']['__CSS__']    = C('CURRENT_DOMAIN').'/'.APP_FOLDER.MODULE_NAME.'/View/Public/css';
+        $system_config['view_replace_str']['__JS__']     = C('CURRENT_DOMAIN').'/'.APP_FOLDER.MODULE_NAME.'/View/Public/js';
+        $system_config['view_replace_str']['__LIBS__']   = C('CURRENT_DOMAIN').'/'.APP_FOLDER.MODULE_NAME.'/View/Public/libs';
+        C($system_config);
+    }
+    /**
      * 模板显示 调用内置的模板引擎显示方法，
      * @access protected
      * @param string $templateFile 指定要调用的模板文件
