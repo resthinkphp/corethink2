@@ -86,7 +86,7 @@
                                                             <li role="separator" class="divider"></li>
                                                         <?php endif; ?>
                                                         <volist name="_user_nav_main" id="vo_nav">
-                                                            <li><a href="{:U($vo_nav['url'], '', true, true)}" class="{$vo_nav.class}"><i class="{$vo_nav.icon}" style="width: 16px;text-align: center;"></i> {$vo_nav.title}</a></li>
+                                                            <li><a href="{:U($vo_nav['url'], '', true, true)}" class="<?php if(isset($vo_nav['class'])) echo $vo_nav['class'];?>"><i class="{$vo_nav.icon}" style="width: 16px;text-align: center;"></i> {$vo_nav.title}</a></li>
                                                         </volist>
                                                         <li role="separator" class="divider"></li>
                                                         <li><a href="{:U('User/User/logout', '', true, true)}" class="ajax-get"><i class="fa fa-sign-out" style="width: 16px;text-align: center;"></i> 注销登录</a></li>
