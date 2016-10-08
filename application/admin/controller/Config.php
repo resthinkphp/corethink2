@@ -184,7 +184,7 @@ class Config extends Admin {
         // 构造表单名、解析options
         foreach ($data_list as &$data) {
             $data['name']    = 'config['.$data['name'].']';
-            $data['options'] = \Common\Util\Think\Str::parseAttr($data['options']);
+            $data['options'] = \app\common\util\think\Str::parseAttr($data['options']);
         }
 
         // 使用FormBuilder快速建立表单页面。

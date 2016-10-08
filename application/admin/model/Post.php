@@ -7,7 +7,7 @@
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\model;
-use think\Model;
+use app\common\model\Model;
 /**
  * 文章模型
  * @author jry <598821125@qq.com>
@@ -19,7 +19,7 @@ class Post extends Model {
      * 我们约定每个模块的数据表都加上相同的前缀，比如微信模块用weixin作为数据表前缀
      * @author jry <598821125@qq.com>
      */
-    protected $tableName = 'admin_post';
+    protected $table= 'admin_post';
 
     /**
      * 自动验证规则

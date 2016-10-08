@@ -7,7 +7,7 @@
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\model;
-use think\Model;
+use app\common\model\Model;
 /**
  * 部门模型
  * @author jry <598821125@qq.com>
@@ -17,7 +17,7 @@ class Group extends Model {
      * 数据库表名
      * @author jry <598821125@qq.com>
      */
-    protected $tableName = 'admin_group';
+    protected $table= 'admin_group';
 
     /**
      * 自动验证规则

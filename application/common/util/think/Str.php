@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-namespace Common\Util\Think;
+namespace app\common\util\think;
 class Str {
     /**
      * 生成UUID 单机使用

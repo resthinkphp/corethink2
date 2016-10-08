@@ -7,7 +7,7 @@
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\model;
-use think\Model;
+use app\common\model\Model;
 use think\Storage;
 use app\common\util\Tree;
 /**
@@ -19,7 +19,7 @@ class Module extends Model {
      * 数据库表名
      * @author jry <598821125@qq.com>
      */
-    protected $tableName = 'admin_module';
+    protected $table= 'admin_module';
 
     /**
      * 自动验证规则

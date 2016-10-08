@@ -34,6 +34,34 @@ $_config =  [
     // +----------------------------------------------------------------------
     // | 应用设置
     // +----------------------------------------------------------------------
+    'DATA_CRYPT_TYPE'       => 'Think',
+    // 允许访问模块
+    'module_allow_list'       => ['home', 'admin', 'install'],
+    // 模板相关配置
+    'TMPL_PARSE_STRING'  => array(
+        '__ROOT__'       => __ROOT__,
+        '__PUBLIC__'     => __ROOT__.'/Public',
+        '__LYUI__'       => __ROOT__.'/Public/libs/lyui/dist',
+        '__CUI__'        => __ROOT__.'/Public/libs/lyui/dist',
+        '__ADMIN_IMG__'  => __ROOT__.'/'.APP_PATH.'admin/view/public/img',
+        '__ADMIN_CSS__'  => __ROOT__.'/'.APP_PATH.'admin/view/public/css',
+        '__ADMIN_JS__'   => __ROOT__.'/'.APP_PATH.'admin/view/public/js',
+        '__ADMIN_LIBS__' => __ROOT__.'/'.APP_PATH.'admin/view/public/libs',
+        '__HOME_IMG__'   => __ROOT__.'/'.APP_PATH.'home/view/public/img',
+        '__HOME_CSS__'   => __ROOT__.'/'.APP_PATH.'home/view/public/css',
+        '__HOME_JS__'    => __ROOT__.'/'.APP_PATH.'home/view/public/js',
+        '__HOME_LIBS__'  => __ROOT__.'/'.APP_PATH.'home/view/public/libs',
+    ),
+    // 系统功能模板
+    'USER_CENTER_SIDE'    => APP_PATH.'user/view/index/side.html',
+    'USER_CENTER_INFO'    => APP_PATH.'user/view/index/info.html',
+    'USER_CENTER_FORM'    => APP_PATH.'user/view/builder/form.html',
+    'USER_CENTER_LIST'    => APP_PATH.'user/view/builder/list.html',
+    'HOME_PUBLIC_LAYOUT'  => APP_PATH.'home/view/public/layout.html',
+    'ADMIN_PUBLIC_LAYOUT' => APP_PATH.'Admin/view/public/layout.html',
+    'HOME_PUBLIC_MODAL'   => APP_PATH.'Home/view/public/modal.html',
+    'LISTBUILDER_LAYOUT'  => APP_PATH.'Common/builder/listbuilder.html',
+    'FORMBUILDER_LAYOUT'  => APP_PATH.'Common/builder/formbuilder.html',
 
     // 应用命名空间
     'app_namespace'          => 'app',
@@ -136,13 +164,15 @@ $_config =  [
         // 模板文件名分隔符
         'view_depr'    => DS,
         // 模板引擎普通标签开始标记
-        'tpl_begin'    => '<',
+        'tpl_begin'    => '{',
         // 模板引擎普通标签结束标记
-        'tpl_end'      => '>',
+        'tpl_end'      => '}',
         // 标签库标签开始标记
         'taglib_begin' => '<',
         // 标签库标签结束标记
         'taglib_end'   => '>',
+        // 预先加载的标签库
+        'taglib_pre_load' => '\\app\\home\\taglib\\Lingyun',
     ],
 
     // 视图输出字符串内容替换

@@ -23,9 +23,15 @@ class InitConfig{
         // 安装模式下直接返回
         if(defined('BIND_MODULE') && BIND_MODULE === 'Install') return;
 
+        // define
+        define('MODULE_NAME', \think\Request::instance()->module());
+        define('CONTROLLER_NAME', \think\Request::instance()->controller());
+        define('ACTION_NAME', \think\Request::instance()->action());
+        define('IS_AJAX', ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')) ? true : false);
+
         // 读取数据库中的配置
         $system_config = S('DB_CONFIG_DATA');
-        if (!$system_config || APP_DEBUG === true) {
+        if (!$system_config || C('app_debug') === true) {
             // 获取所有系统配置
             $system_config = D('Admin/Config')->lists();
 
@@ -47,29 +53,29 @@ class InitConfig{
                 $system_config = array_merge($system_config, $module_config);
 
                 // 加载模块标签库及行为扩展
-                $system_config['TAGLIB_PRE_LOAD'] = explode(',', C('TAGLIB_PRE_LOAD'));  // 先取出配置文件中定义的否则会被覆盖
-                foreach ($module_config as $key => $val) {
-                    // 加载模块标签库
-                    if ($val['taglib']) {
-                        foreach ($val['taglib'] as $tag) {
-                            $tag_path = APP_PATH.$val['module_name'].'/'.'TagLib'.'/'.$tag.'.class.php';
-                            if (is_file($tag_path)) {
-                                $system_config['TAGLIB_PRE_LOAD'][] = $val['module_name'].'\\TagLib\\'.$tag;
-                            }
-                        }
-                    }
+                // $system_config['TAGLIB_PRE_LOAD'] = explode(',', C('TAGLIB_PRE_LOAD'));  // 先取出配置文件中定义的否则会被覆盖
+                // foreach ($module_config as $key => $val) {
+                //     // 加载模块标签库
+                //     if ($val['taglib']) {
+                //         foreach ($val['taglib'] as $tag) {
+                //             $tag_path = APP_PATH.$val['module_name'].'/'.'TagLib'.'/'.$tag.'.class.php';
+                //             if (is_file($tag_path)) {
+                //                 $system_config['TAGLIB_PRE_LOAD'][] = $val['module_name'].'\\TagLib\\'.$tag;
+                //             }
+                //         }
+                //     }
 
-                    // 加载模块行为扩展
-                    if ($val['behavior']) {
-                        foreach ($val['behavior'] as $bhv) {
-                            $bhv_path = APP_PATH.$val['module_name'].'/'.'Behavior'.'/'.$bhv.'Behavior.class.php';
-                            if (is_file($bhv_path)) {
-                                \Think\Hook::add('corethink_behavior', $val['module_name'].'\\Behavior\\'.$bhv.'Behavior');
-                            }
-                        }
-                    }
-                }
-                $system_config['TAGLIB_PRE_LOAD'] = implode(',', $system_config['TAGLIB_PRE_LOAD']);
+                //     // 加载模块行为扩展
+                //     if ($val['behavior']) {
+                //         foreach ($val['behavior'] as $bhv) {
+                //             $bhv_path = APP_PATH.$val['module_name'].'/'.'Behavior'.'/'.$bhv.'Behavior.class.php';
+                //             if (is_file($bhv_path)) {
+                //                 \Think\Hook::add('corethink_behavior', $val['module_name'].'\\Behavior\\'.$bhv.'Behavior');
+                //             }
+                //         }
+                //     }
+                // }
+                // $system_config['TAGLIB_PRE_LOAD'] = implode(',', $system_config['TAGLIB_PRE_LOAD']);
             }
 
             // 加载Formbuilder扩展类型
@@ -87,7 +93,7 @@ class InitConfig{
             }
 
             // 授权数据
-            $system_config['SN_DECODE'] = \Think\Crypt::decrypt($system_config['AUTH_SN'], sha1(md5($system_config['AUTH_USERNAME'])));
+            $system_config['SN_DECODE'] = \app\common\util\think\Crypt::decrypt($system_config['AUTH_SN'], sha1(md5($system_config['AUTH_USERNAME'])));
 
             S('DB_CONFIG_DATA', $system_config, 3600);  // 缓存配置
         }
@@ -140,7 +146,7 @@ class InitConfig{
         $system_config['TMPL_PARSE_STRING']['__LIBS__']   = $current_domain.'/'.APP_PATH.MODULE_NAME.'/View/Public/libs';
 
         // 获取当前主题的名称
-        $current_theme = D('Admin/Theme')->where(array('current' => 1))->order('id asc')->getField('name');
+        $current_theme = D('Admin/Theme')->where(array('current' => 1))->order('id asc')->value('name');
 
         C($system_config);  // 添加配置
     }

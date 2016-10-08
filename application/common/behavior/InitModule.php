@@ -39,7 +39,7 @@ class InitModule {
         // 允许访问模块列表加上安装的功能模块
         $module_name_list  = D('Admin/Module')
                            ->where(array('status' => 1, 'is_system' => 0))
-                           ->getField('name', true);
+                           ->column('name');
         $module_allow_list = array_merge(
             C('MODULE_ALLOW_LIST'),
             $module_name_list
@@ -53,16 +53,6 @@ class InitModule {
         // 如果是后台访问自动设置默认模块为Admin
         if (MODULE_MARK === 'Admin') {
             C('DEFAULT_MODULE', 'Admin');
-        }
-
-        // 根据URL参数设置默认模块
-        if ($_GET['default_module']) {
-            C('DEFAULT_MODULE', ucfirst($_GET['default_module']));
-            S('default_module', ucfirst($_GET['default_module']));
-        } else {
-            if (S('default_module')) {
-                C('DEFAULT_MODULE', S('default_module'));
-            }
         }
 
         // API请求

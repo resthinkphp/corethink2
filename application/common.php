@@ -67,7 +67,7 @@ function format_data($data = null) {
     if (!$data) {
         $data = $_POST;
     }
-    $data_object = new \Common\Util\Think\Date;
+    $data_object = new \app\common\util\think\Date;
     foreach($data as $key => $val){
         if (!is_array($val)) {
             $val = trim($val);
@@ -150,7 +150,7 @@ function parse_content($str) {
  * @return str
  */
 function cut_str($str, $start, $length, $charset='utf-8', $suffix = true) {
-    return \Common\Util\Think\Str::cutStr(
+    return \app\common\util\think\Str::cutStr(
         $str, $start, $length, $charset, $suffix
     );
 }
@@ -162,7 +162,7 @@ function cut_str($str, $start, $length, $charset='utf-8', $suffix = true) {
  * @author jry <598821125@qq.com>
  */
 function html2text($str) {
-   return \Common\Util\Think\Str::html2text($str);
+   return \app\common\util\think\Str::html2text($str);
 }
 
 /**
@@ -174,7 +174,7 @@ function html2text($str) {
  * @author jry <598821125@qq.com>
  */
 function friendly_date($sTime, $type = 'mohu', $alt = 'false') {
-    $date = new \Common\Util\Think\Date((int)$sTime);
+    $date = new \app\common\util\think\Date((int)$sTime);
     return $date->friendlyDate($type, $alt);
 }
 

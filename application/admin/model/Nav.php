@@ -7,7 +7,7 @@
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\model;
-use think\Model;
+use app\common\model\Model;
 use app\common\util\Tree;
 /**
  * 导航模型
@@ -18,7 +18,7 @@ class Nav extends Model {
      * 数据库表名
      * @author jry <598821125@qq.com>
      */
-    protected $tableName = 'admin_nav';
+    protected $table= 'admin_nav';
 
     /**
      * 自动验证规则
@@ -43,10 +43,11 @@ class Nav extends Model {
     );
 
     /**
-     * 查找后置操作
+     * 根据不同类型导航获取href链接
      * @author jry <598821125@qq.com>
      */
-    protected function _after_find(&$result, $options) {
+    public function getHrefAttr($value, $result)
+    {
         // 处理不同导航类型
         switch ($result['type']) {
             case 'link':
@@ -73,16 +74,7 @@ class Nav extends Model {
                 $result['href'] = U('/lists/' . $result['id'], '', true, true);
                 break;
         }
-    }
-
-    /**
-     * 查找后置操作
-     * @author jry <598821125@qq.com>
-     */
-    protected function _after_select(&$result, $options) {
-        foreach($result as &$record){
-            $this->_after_find($record, $options);
-        }
+        return $result['href'];
     }
 
     /**
@@ -173,7 +165,7 @@ class Nav extends Model {
         $map['status'] = array('eq', 1);
         $map['group']  = array('eq', $group);
         $tree = new Tree();
-        $list = $this->field($field)->where($map)->order('sort asc,id asc')->select();
+        $list = $this->where($map)->order('sort asc,id asc')->select();
 
         // 返回当前导航的子导航树
         $list = $tree->list_to_tree(
@@ -186,6 +178,7 @@ class Nav extends Model {
         if (!$list) {
             return $this->getSameLevelNavTree($id);
         }
+        
         return $list;
     }
 

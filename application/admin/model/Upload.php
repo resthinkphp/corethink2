@@ -7,8 +7,8 @@
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\model;
-use think\Model;
-use think\Upload;
+use app\common\model\Model;
+use think\File;
 /**
  * 上传模型
  * @author jry <598821125@qq.com>
@@ -18,7 +18,7 @@ class Upload extends Model {
      * 数据库表名
      * @author jry <598821125@qq.com>
      */
-    protected $tableName = 'admin_upload';
+    protected $table= 'admin_upload';
 
     /**
      * 自动验证规则
@@ -43,11 +43,8 @@ class Upload extends Model {
         array('status', '1', self::MODEL_INSERT),
     );
 
-    /**
-     * 查找后置操作
-     * @author jry <598821125@qq.com>
-     */
-    protected function _after_find(&$result, $options) {
+    public function getRealPathAttr($value, $result)
+    {
         //获取上传文件的地址
         if ($result['url']) {
             $result['real_path'] = $result['url'];
@@ -58,10 +55,19 @@ class Upload extends Model {
                 if (C('IS_API')) {
                     $result['real_path'] = C('TOP_HOME_PAGE') . $result['path'];
                 } else {
-                    $result['real_path'] = $_SERVER['HTTP_ORIGIN'] . __ROOT__ . $result['path'];
+                    $result['real_path'] = __ROOT__ . $result['path'];
                 }
             }
         }
+        return $result['real_path'];
+    }
+    
+
+    /**
+     * 查找后置操作
+     * @author jry <598821125@qq.com>
+     */
+    protected function _after_find(&$result, $options) {
         if (in_array($result['ext'], array('jpg', 'jpeg', 'png', 'gif', 'bmp') )) {
             $result['show'] = '<img class="picture" src="'.$result['real_path'].'">';
         } else {
@@ -89,6 +95,8 @@ class Upload extends Model {
         if ($id) {
             $upload_info = $this->find($id);
             $url = $upload_info['real_path'];
+        } else {
+            $url = '';
         }
         if (!$url) {
             switch ($type) {

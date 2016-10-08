@@ -29,15 +29,21 @@ class InitHook {
         C($addon_config);
 
         $data = S('hooks');
-        if (!$data || APP_DEBUG === true) {
-            $hooks = D('Admin/Hook')->getField('name,addons');
+        if (!$data || C('app_debug') === true) {
+            $hooks = D('Admin/Hook')->column('name,addons');
             foreach ($hooks as $key => $value) {
                 if ($value) {
                     $map['status'] = 1;
                     $names         = explode(',',$value);
                     $map['name']   = array('IN',$names);
-                    $data = D('Admin/Addon')->where($map)->getField('id,name');
+                    $data = D('Admin/Addon')->where($map)->column('id,name');
                     if($data){
+                        // 过滤掉插件目录不存在的插件
+                        foreach ($data as $key => $val) {
+                            if (is_dir('.addons/'.$val)) {
+                                unset($data[$key]);
+                            }
+                        }
                         $addons = array_intersect($names, $data);
                         Hook::add($key, array_map('get_addon_class', $addons));
                     }

@@ -12,22 +12,22 @@ use think\template\TagLib;
  * 标签库
  * @author jry <598821125@qq.com>
  */
-class Opencmf extends TagLib {
+class Lingyun extends TagLib {
     /**
      * 定义标签列表
      * @author jry <598821125@qq.com>
      */
     protected $tags = array(
-        'sql_query'   => array('attr' => 'sql,result', 'close' => 0),             //SQL查询
+        'sql'   => array('attr' => 'sql,result', 'close' => 0),             //SQL查询
         'nav_list'    => array('attr' => 'name,pid,group', 'close' => 1),         //导航列表
-        'slider_list' => array('attr' => 'name,limit,page,order', 'close' => 1),  //幻灯列表
-        'post_list'   => array('attr' => 'name,limit,page,order,cid', 'close' => 1),  //文章列表
+        'slider_ist' => array('attr' => 'name,limit,page,order', 'close' => 1),  //幻灯列表
+        'post_ist'   => array('attr' => 'name,limit,page,order,cid', 'close' => 1),  //文章列表
     );
 
     /**
      * SQL查询
      */
-    public function _sql_query($tag, $content) {
+    public function tagSql($tag, $content) {
         $sql    =    $tag['sql'];
         $result =    !empty($tag['result']) ? $tag['result'] : 'result';
         $parse  =    '<?php $'.$result.' = M()->query("'.$sql.'");';
@@ -39,10 +39,10 @@ class Opencmf extends TagLib {
     /**
      * 导航列表
      */
-    public function _nav_list($tag, $content) {
+    public function tagNav_list($tag, $content) {
         $name   = $tag['name'];
         $pid    = $tag['pid'] ? : 0;
-        $group  = $tag['group'] ? : 'main';
+        $group  = $tag['group'] ? '\''.$tag['group'].'\'' : 'main';
         $parse  = '<?php ';
         $parse .= '$__NAV_LIST__ = D(\'Admin/Nav\')->getNavTree('.$pid.', '.$group.');';
         $parse .= ' ?>';
@@ -56,7 +56,7 @@ class Opencmf extends TagLib {
      * 幻灯列表
      * @author jry <598821125@qq.com>
      */
-    public function _slider_list($tag, $content) {
+    public function tagSlider_list($tag, $content) {
         $name   = $tag['name'];
         $limit  = $tag['limit'] ? : 10;
         $page   = $tag['page'] ? : 1;
@@ -75,7 +75,7 @@ class Opencmf extends TagLib {
      * 文章列表
      * @author jry <598821125@qq.com>
      */
-    public function _post_list($tag, $content) {
+    public function tagPost_list($tag, $content) {
         $name   = $tag['name'];
         $cid    = $tag['cid'];
         if (!$cid) {

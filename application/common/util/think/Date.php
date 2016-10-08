@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-namespace Common\Util\Think;
+namespace app\common\util\think;
 /**
  * 日期时间操作类
  * @category   ORG

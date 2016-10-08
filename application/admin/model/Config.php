@@ -7,7 +7,7 @@
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\model;
-use think\Model;
+use app\common\model\Model;
 /**
  * 配置模型
  * @author jry <598821125@qq.com>
@@ -17,7 +17,7 @@ class Config extends Model {
      * 数据库表名
      * @author jry <598821125@qq.com>
      */
-    protected $tableName = 'admin_config';
+    protected $table= 'admin_config';
 
     /**
      * 自动验证规则
@@ -55,7 +55,7 @@ class Config extends Model {
         foreach ($list as $key => $val) {
             switch ($val['type']) {
                 case 'array': 
-                    $config[$val['name']] = \Common\Util\Think\Str::parseAttr($val['value']);
+                    $config[$val['name']] = \app\common\util\think\Str::parseAttr($val['value']);
                     break;
                 case 'checkbox': 
                     $config[$val['name']] = explode(',', $val['value']);

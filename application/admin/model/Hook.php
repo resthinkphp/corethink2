@@ -7,7 +7,7 @@
 // | Author: jry <598821125@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\model;
-use think\Model;
+use app\common\model\Model;
 /**
  * 插件钩子模型
  * 该类参考了OneThink的部分实现
@@ -18,7 +18,7 @@ class Hook extends Model {
      * 数据库表名
      * @author jry <598821125@qq.com>
      */
-    protected $tableName = 'admin_hook';
+    protected $table= 'admin_hook';
 
     /**
      * 自动验证规则

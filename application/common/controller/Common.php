@@ -26,7 +26,7 @@ class Common extends Controller {
      */
     protected function display($template = '', $charset = '', $contentType = '', $content = '', $prefix = '') {
         if (!is_file($template)) {
-            $depr = C('TMPL_FILE_DEPR');
+            $depr = C('template.view_depr');
             if ('' == $template) {
                 // 如果模板文件名为空 按照默认规则定位
                 $template = CONTROLLER_NAME . $depr . ACTION_NAME;
@@ -36,12 +36,20 @@ class Common extends Controller {
         } else {
             $file = $template;
         }
+        if ($template === '/') {
+            $template = '';
+        }
 
         // Wap主题
         $system_config = array();
         $current_theme = C('CURRENT_THEME');
         $current_domain = C('CURRENT_DOMAIN');
-        $is_builder    = $this->view->get('is_builder');
+        
+        if ($this->view->__isset('is_builder')) {
+            $is_builder    = $this->view->__get('is_builder');
+        } else {
+            $is_builder    = false;
+        }
         if ($current_theme) {
             if (C('IS_WAP')) {
                 $parent_theme_path = './Theme/'.$current_theme.'/'.MODULE_NAME.'/'; //当前主题文件夹路径
@@ -307,11 +315,11 @@ class Common extends Controller {
             // 获取所有模块配置的用户导航
             $mod_con['status'] = 1;
             $_user_nav_main = array();
-            $_user_nav_list = D('Admin/Module')->where($mod_con)->getField('user_nav', true);
+            $_user_nav_list = D('Admin/Module')->where($mod_con)->column('user_nav');
             foreach ($_user_nav_list as $key => $val) {
                 if ($val) {
                     $val = json_decode($val, true);
-                    if ($val['main']) {
+                    if (isset($val['main']) && $val['main']) {
                         $_user_nav_main = array_merge_recursive($_user_nav_main, $val['main']);
                     }
                 }
@@ -340,7 +348,7 @@ class Common extends Controller {
             }
             $this->success('数据获取成功', '', array('data' => $this->view->get(), 'html' => $html));
         } else {
-            $this->view->display($template);
+            echo $this->fetch($template);
         }
     }
 }
