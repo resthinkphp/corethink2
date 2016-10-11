@@ -1,0 +1,75 @@
+<extend name="$_home_public_layout"/>
+
+<block name="style">
+    <style position="page" type="text/css">
+        /* Builder样式 */
+        .img-box,
+        .file-box {
+            position: relative;
+        }
+        .img-box img {
+            height: 80px;
+            max-widht: 120px;
+        }
+        .img-box .remove-picture {
+            color: red;
+            position: absolute;
+            top: 0;
+            right: -8px;
+            background: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .img-box .remove-picture:hover {
+            color: #DD0000;
+            box-shadow: inset 0 1px 1px red, 0 0 8px red;
+        }
+        .file-box .remove-file {
+            color: red;
+            position: absolute;
+            top: 0px;
+            right: -10px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .file-box .remove-file:hover {
+            color: #DD0000;
+            box-shadow: inset 0 1px 1px red, 0 0 8px red;
+        }
+    </style>
+</block>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="{:U('User/Center/index')}" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$meta_title}</div>
+            <div class="right">
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar" data-page="{$_page_name}">
+        <div class="page-content">
+            <include file="$_formbuilder_layout" builderpath="./Application/Home/View/Wap/Builder" />
+            <div class="content-block">
+                <p>
+                    <a href="#" type="submit" class="button button-big button-fill ajax-post" target-form="form-builder">
+                        <?php if ($submit_title) {echo $submit_title;} else {echo '确定';} ?>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</block>
+
+<block name="script">
+    <include position="page" file="./Application/Common/Builder/javascript.html" />
+    <script position="page" type="text/javascript" src="__PUBLIC__/libs/webuploader/webuploader.html5only.min.js"></script>
+</block>

@@ -1,0 +1,68 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="{:U('User/Center/index')}" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$meta_title}</div>
+            <div class="right"></div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar {$_page_name}" data-page="{$_page_name}">
+        <div class="page-content">
+            <div class="list-block">
+                <?php if(!isset($_GET['type'])): ?>
+                    <ul>
+                        <li>
+                            <a href="{:U('', array('type' => 1))}" class="item-link item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">我关注的人</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:U('', array('type' => 2))}" class="item-link item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">我的粉丝</div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                <?php else: ?>
+                    <ul>
+                        <volist name="data_list" id="vo">
+                            <li class="swipeout">
+                                <div class="swipeout-content item-content">
+                                    <div class="item-inner">
+                                        <div class="item-media">
+                                            <img style="widht:30px;height:30px;" src="{$vo.user.cover|get_cover='avatar'}">
+                                        </div>
+                                        <div class="item-title">
+                                            <span class="color-grey">{$vo.user.nickname}</span>
+                                        </div>
+                                        <div class="item-after">
+                                            <a href="{:U('User/Talk/index', array('to_uid' => $vo['user']['id']))}">发私信</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swipeout-actions-right">
+                                    <php>if($_GET['type'] === '2'):</php>
+                                        <a href="{:U('User/Follow/add', array('uid' => $vo['user']['id']))}" class="link bg-blue ajax-get">关注Ta</a>
+                                    <php>else:</php>
+                                        <a href="{:U('User/Follow/add', array('uid' => $vo['user']['id']))}" class="link bg-red ajax-get">取消关注</a>
+                                    <php>endif;</php>
+                                </div>
+                            </li>
+                        </volist>
+                    </ul>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</block>

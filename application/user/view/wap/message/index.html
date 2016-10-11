@@ -1,0 +1,75 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="{:U('User/Center/index')}" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$meta_title}</div>
+            <div class="right"></div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar {$_page_name}" data-page="{$_page_name}">
+        <div class="page-content">
+            <div class="list-block">
+                <?php if(!isset($_GET['type'])): ?>
+                    <ul>
+                        <volist name="message_type" id="type">
+                            <li>
+                                <a href="{:U('User/Message/index', array('type' => $key))}" class="item-link item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">{$type}</div>
+                                        <div class="item-after">
+                                            <notempty name="new_message_type[$key]">
+                                                <span class="badge">{$new_message_type[$key]}</span>
+                                            </notempty>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </volist>
+                    </ul>
+                <?php else: ?>
+                    <ul>
+                        <volist name="message_list" id="vo">
+                            <li class="swipeout">
+                                <a href="{:U('detail', array('id' => $vo['id']))}" class="item-link swipeout-content item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">
+                                            <?php if($vo['is_read']): ?>
+                                                <span class="color-grey">{$vo.title}</span>
+                                            <?php else: ?>
+                                                <span class="color-red">{$vo.title}</span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="item-after">
+                                            <span>{$vo.create_time|time_format}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="swipeout-actions-right">
+                                    <?php if(!$vo['is_read']): ?>
+                                        <a class="link bg-blue ajax-get" href="{:U('setRead', array('ids' => $vo['id']))}">设为已读</a>
+                                    <?php endif; ?>
+                                </div>
+                            </li>
+                        </volist>
+                    </ul>
+                <?php endif; ?>
+            </div>
+
+            <?php if($page && isset($_GET['type'])): ?>
+                <div class="content-block">
+                    <div class="content-block-inner">
+                        <ul class="pagination">{$page}</ul>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</block>

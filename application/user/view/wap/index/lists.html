@@ -1,0 +1,120 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="__ROOT__/" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$meta_title}</div>
+            <div class="right"></div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar {$_page_name}" data-page="{$_page_name}">
+        <div class="page-content pull-to-refresh-content infinite-scroll">
+            <!-- 默认的下拉刷新层 -->
+            <div class="pull-to-refresh-layer">
+                <div class="preloader"></div>
+                <div class="pull-to-refresh-arrow"></div>
+            </div>
+
+            <form class="searchbar searchbar-init" action="{:U('')}" method="get">
+                <div class="searchbar-input">
+                    <input type="search" placeholder="搜索用户" name="keyword">
+                    <a href="#" class="searchbar-clear"></a>
+                </div>
+                <a href="#" class="searchbar-cancel">取消</a>
+            </form>
+
+            <!-- Search bar overlay-->
+            <div class="searchbar-overlay"></div>
+
+            <div class="list-block media-list">
+                <ul>
+                    <volist name="data_list" id="vo">
+                        <li>
+                            <a href="{:U('home', array('uid' => $vo['id']))}" class="item-link item-content">
+                                <div class="item-media"><img src="{$vo.avatar|get_cover='avatar'}" width="80"></div>
+                                    <div class="item-inner">
+                                        <div class="item-title-row">
+                                            <div class="item-title">{$vo.nickname} {$vo.gender_icon}</div>
+                                        </div>
+                                        <div class="item-subtitle">{$vo.username}</div>
+                                    <div class="item-text">{$vo.summary|default="什么也没写"}</div>
+                                </div>
+                            </a>
+                        </li>
+                    </volist>
+                </ul>
+            </div>
+
+            <!-- 加载提示符 -->
+            <div class="infinite-scroll-preloader" style="margin-top:-20px;margin-bottom: 10px;text-align: center;">
+                <div class="preloader" style="width:34px;height:34px;"></div>
+            </div>
+
+        </div>
+    </div>
+</block>
+
+<block name="script">
+    <script position="page" type="text/javascript">
+        var page = 2, loading= false;
+
+        // 无限加载页面
+        var ptrContent = $$('.{$_page_name} .infinite-scroll');
+
+        // 添加'refresh'监听器
+        ptrContent.on('infinite', function (e) {
+            // 如果正在加载，则退出
+            if (loading) return;
+
+            // 设置flag
+            loading = true;
+
+            $.ajax({
+                dataType: "json",
+                url: "{:U("")}",
+                data: {p: page++},
+                type: "get",
+                success: function(data) {
+                    if (data.status == 1) {
+                        // 重置加载flag
+                        loading = false;
+                        var list = data.data.data_list;
+                        var itemHTML = '';
+                        for (var i = 0; i <= list.length - 1; i++) {
+                            var summary = list[i]['summary'] ? list[i]['summary'] : '什么都没写';
+                            // 列表元素的HTML字符串
+                            itemHTML = '<li>' +
+                                            '<a class="item-link item-content" href="'+ list[i]['home_href'] +'">' +
+                                                '<div class="item-media"><img src="' + list[i]['avatar_url'] + '" width="80"/></div>' +
+                                                '<div class="item-inner">' +
+                                                    '<div class="item-title-row">' +
+                                                        '<div class="item-title">' + list[i]['nickname'] + ' ' + list[i]['gender_icon'] + '</div>' +
+                                                    '</div>' +
+                                                    '<div class="item-subtitle">' + list[i]['username'] + '</div>' +
+                                                    '<div class="item-text">' + summary+ '</div>' +
+                                                '</div>' +
+                                            '</a>' +
+                                        '</li>';
+                            // 加入新列表元素
+                            ptrContent.find('.{$_page_name} ul').append(itemHTML);
+                        };
+                    } else {
+                        // 加载完毕，则注销无限加载事件，以防不必要的加载
+                        myApp.detachInfiniteScroll($$('.infinite-scroll'));
+
+                        // 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+                    }
+                }
+            });
+        });
+    </script>
+</block>
+

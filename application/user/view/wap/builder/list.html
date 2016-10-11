@@ -1,0 +1,62 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="__ROOT__/" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$meta_title}</div>
+            <div class="right">
+                <?php if(count($top_button_list) == 1): ?>
+                    <a href="{$top_button_list[0]['href']}" class="link" data-ignore-cache="true">
+                        <span>{$top_button_list[0]['title']}</span>
+                    </a>
+                <?php elseif(count($top_button_list) > 1): ?>
+                    <a href="#" class="link {$_page_name}-actions" data-ignore-cache="true">
+                        <i class="icon fa fa-caret-down"></i>
+                        <span>操作</span>
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar" data-page="{$_page_name}">
+        <div class="page-content">
+            <include file="$_listbuilder_layout" builderpath="./Application/Common/Builder" />
+        </div>
+    </div>
+</block>
+
+<block name="script">
+    <script position="page" type="text/javascript">
+        $('.{$_page_name}-actions').bind('click', function() {
+            var target = this;
+            var buttons1 = [
+                {
+                    text: '选择一个操作',
+                    label: true
+                },
+                <volist name="top_button_list" id="button">
+                    {
+                        text: '<a data-ignore-cache="true" {$button.attribute}>{$button.title}</a>',
+                        bold: true
+                    }
+                    <?php if($i< count($top_button_list)) echo ","; ?>
+                </volist>
+            ];
+            var buttons2 = [
+                {
+                    text: '取消',
+                    color: 'red'
+                }
+            ];
+            var groups = [buttons1, buttons2];
+            myApp.actions(target, groups);
+        });
+    </script>
+</block>

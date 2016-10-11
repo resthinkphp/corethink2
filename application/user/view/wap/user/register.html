@@ -1,0 +1,302 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar theme-white">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="__ROOT__/" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$meta_title}</div>
+            <div class="right">
+                <a href="{:U('User/Index/agreement')}" class="link">
+                    <span>用户协议</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar {$_page_name}" data-page="{$_page_name}">
+        <div class="page-content">
+            <div class="content-block">
+                <!-- 后台管理员允许注册方式才会显示 -->
+                <?php
+                    $allow_reg_type = C('user_config.allow_reg_type');
+                    $user_type_list = D('User/Type')->where('status = 1')->select();
+                ?>
+                <?php if(count($allow_reg_type) !== 1): ?>
+                    <div class="buttons-row">
+                        <php>if(in_array('username', $allow_reg_type)):</php>
+                            <a href="#reg-tab1" class="tab-link button <php>if($allow_reg_type[0] === 'username') echo 'active';</php>">用户名注册</a>
+                        <php>endif;</php>
+                        <php>if(in_array('email', $allow_reg_type)):</php>
+                            <a href="#reg-tab2" class="tab-link button <php>if($allow_reg_type[0] === 'email') echo 'active';</php>">邮箱注册</a>
+                        <php>endif;</php>
+                        <php>if(in_array('mobile', $allow_reg_type)):</php>
+                            <a href="#reg-tab3" class="tab-link button <php>if($allow_reg_type[0] === 'mobile') echo 'active';</php>">手机号注册</a>
+                        <php>endif;</php>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="tabs">
+                <php>if(in_array('username', $allow_reg_type)):</php>
+                    <div id="reg-tab1" class="tab <?php if($allow_reg_type[0] === 'username') echo 'active'; ?>">
+                        <form action="{:U('User/User/register', null, true, true)}" method="post" class="form reg-form-username">
+                            <div class="list-block">
+                                <ul>
+                                    <?php if(count($user_type_list) !== 1): ?>
+                                        <li>
+                                            <a href="#" class="item-link smart-select" data-back-on-select="true" data-back-text="返回">
+                                                <select name="user_type">
+                                                    <volist name="user_type_list" id="utype">
+                                                        <?php if($_GET['type']): ?>
+                                                            <?php if($_GET['type'] == $utype['id']): ?>
+                                                                <label class="radio-inline">
+                                                                    <option value="{$utype.id}">{$utype.title}</option>
+                                                                </label>
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <label class="radio-inline">
+                                                                <option value="{$utype.id}">{$utype.title}</option>
+                                                            </label>
+                                                        <?php endif; ?>
+                                                    </volist>
+                                                </select>
+                                                <div class="item-content">
+                                                    <div class="item-inner">
+                                                        <div class="item-title">用户类型</div>
+                                                        <div class="item-after"></div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    <?php else: ?>
+                                        <input type="hidden" name="user_type" value="{$user_type_list[0]['id']}">
+                                    <?php endif; ?>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title label">用户名</div>
+                                                <div class="item-input">
+                                                    <input type="text" name="username" placeholder="请输入用户名">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title label">密码</div>
+                                                <div class="item-input">
+                                                    <input type="password" name="password" placeholder="请输入密码">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title label">验证码</div>
+                                                <div class="item-input">
+                                                    <div class="row">
+                                                        <div class="col-40">
+                                                            <input type="text" name="verify" placeholder="验证码">
+                                                        </div>
+                                                        <div class="col-60">
+                                                            <img style="margin-top: 5px;height: 40px" class="verifyimg reload-verify" alt="验证码" src="{:U('User/User/verify')}" title="点击刷新">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="list-block">
+                                <input type="hidden" name="reg_type" value="username">
+                                <ul>
+                                    <li><a href="#" type="submit" class="submit item-link list-button ajax-post" target-form="reg-form-username">注册</a></li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                <php>endif;</php>
+                <php>if(in_array('email', $allow_reg_type)):</php>
+                    <div id="reg-tab2" class="tab <?php if($allow_reg_type[0] === 'email') echo 'active'; ?>">
+                        <form action="{:U('User/User/register', null, true, true)}" method="post" class="form reg-form-email">
+                            <div class="list-block">
+                                <ul>
+                                    <?php if(count($user_type_list) !== 1): ?>
+                                        <li>
+                                            <a href="#" class="item-link smart-select" data-back-on-select="true" data-back-text="返回">
+                                                <select name="user_type">
+                                                    <volist name="user_type_list" id="utype">
+                                                        <?php if($_GET['type']): ?>
+                                                            <?php if($_GET['type'] == $utype['id']): ?>
+                                                                <label class="radio-inline">
+                                                                    <option value="{$utype.id}">{$utype.title}</option>
+                                                                </label>
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <label class="radio-inline">
+                                                                <option value="{$utype.id}">{$utype.title}</option>
+                                                            </label>
+                                                        <?php endif; ?>
+                                                    </volist>
+                                                </select>
+                                                <div class="item-content">
+                                                    <div class="item-inner">
+                                                        <div class="item-title">用户类型</div>
+                                                        <div class="item-after"></div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    <?php else: ?>
+                                        <input type="hidden" name="user_type" value="{$user_type_list[0]['id']}">
+                                    <?php endif; ?>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title label">邮箱</div>
+                                                <div class="item-input">
+                                                    <input type="email" name="email" placeholder="请输入邮箱"
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title label">密码</div>
+                                                <div class="item-input">
+                                                    <input type="password" name="password" placeholder="请输入密码">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title label">验证码</div>
+                                                <div class="item-input">
+                                                    <div class="row">
+                                                        <div class="col-50">
+                                                            <input type="text" name="verify" placeholder="验证码">
+                                                        </div>
+                                                        <div class="col-50">
+                                                            <a style="padding: 0 5px;margin-top: 5px;" href="#" class="button color-orange button-fill send-mail-verify" data-title="注册验证">发送验证码</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="list-block">
+                                <input type="hidden" name="reg_type" value="email">
+                                <ul>
+                                    <li><a href="#" type="submit" class="submit item-link list-button ajax-post" target-form="reg-form-email">注册</a></li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                <php>endif;</php>
+                <php>if(in_array('mobile', $allow_reg_type)):</php>
+                    <div id="reg-tab3" class="tab <?php if($allow_reg_type[0] === 'mobile') echo 'active'; ?>">
+                        <form action="{:U('User/User/register', null, true, true)}" method="post" class="form reg-form-mobile">
+                            <div class="list-block">
+                                <ul>
+                                    <?php if(count($user_type_list) !== 1): ?>
+                                        <li>
+                                            <a href="#" class="item-link smart-select" data-back-on-select="true" data-back-text="返回">
+                                                <select name="user_type">
+                                                    <volist name="user_type_list" id="utype">
+                                                        <?php if($_GET['type']): ?>
+                                                            <?php if($_GET['type'] == $utype['id']): ?>
+                                                                <label class="radio-inline">
+                                                                    <option value="{$utype.id}">{$utype.title}</option>
+                                                                </label>
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <label class="radio-inline">
+                                                                <option value="{$utype.id}">{$utype.title}</option>
+                                                            </label>
+                                                        <?php endif; ?>
+                                                    </volist>
+                                                </select>
+                                                <div class="item-content">
+                                                    <div class="item-inner">
+                                                        <div class="item-title">用户类型</div>
+                                                        <div class="item-after"></div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    <?php else: ?>
+                                        <input type="hidden" name="user_type" value="{$user_type_list[0]['id']}">
+                                    <?php endif; ?>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title label">手机号</div>
+                                                <div class="item-input">
+                                                    <input type="text" name="mobile" placeholder="请输入手机号">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title label">密码</div>
+                                                <div class="item-input">
+                                                    <input type="password" name="password" placeholder="请输入密码">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title label">验证码</div>
+                                                <div class="item-input">
+                                                    <div class="row">
+                                                        <div class="col-50">
+                                                            <input type="text" name="verify" placeholder="验证码">
+                                                        </div>
+                                                        <div class="col-50">
+                                                            <a style="padding: 0 5px;margin-top: 5px;" href="#" class="button color-orange button-fill send-mobile-verify" data-title="注册验证">发送验证码</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="list-block">
+                                <input type="hidden" name="reg_type" value="mobile">
+                                <ul>
+                                    <li><a href="#" type="submit" class="submit item-link list-button ajax-post" target-form="reg-form-mobile">注册</a></li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                <php>endif;</php>
+            </div>
+        </div>
+    </div>
+</block>
+
+<block name="script">
+    <script position="page" type="text/javascript">
+        $(function(){
+            $('.reg-form-username .reload-verify').click();
+        });
+    </script>
+</block>

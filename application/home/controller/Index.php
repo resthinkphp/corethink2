@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 namespace app\home\controller;
 use think\Controller;
-//use Common\Util\Think\Page;
+//use common\util\think\Page;
 /**
  * 前台默认控制器
  * @author jry <598821125@qq.com>

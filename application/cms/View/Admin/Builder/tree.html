@@ -1,0 +1,35 @@
+<div id="cate-list"></div>
+
+<?php
+    // 获取所有分类
+    $map['status'] = array('egt', '0');  // 禁用和正常状态
+    $map['group'] = array('eq', 1);
+    $data_list = D('Category')->field('id,pid,group,doc_type,title as text,url,create_time,sort,status')
+               ->where($map)->order('sort asc,id asc')->select();
+
+    // 非系统特殊类型则给标题加上链接以便于进入相应文档列表
+    foreach ($data_list as &$item) {
+        $document_type = D('Type')->find($item['doc_type']);  // 获取当前文档类型
+        if ($document_type['name'] === 'page') {
+            $item['icon'] = 'fa fa-file-o';
+            $item['href'] = U('Cms/Category/edit_with_tree', array('id' => $item['id']));
+        } else if ($document_type['name'] === 'link') {
+            $item['icon'] = 'fa fa-link';
+            if (!stristr($item['url'], 'http://') && !stristr($item['url'], 'https://')) {
+                $item['href'] = 'javascript:window.open(\''.U($item['url']).'\')';
+            } else {
+                $item['href'] = 'javascript:window.open(\''.$item['url'].'\')';
+            }
+        } else if ($document_type['system'] === '0') {
+            $item['icon'] = 'fa fa-folder-open-o';
+            $item['href'] = U('Cms/Index/index', array('cid' => $item['id']));
+        }
+    }
+
+    // 构造树形结构
+    $tree = new \Common\Util\Tree();
+    $data_list = $tree->list_to_tree($data_list, $pk='id', $pid = 'pid', $child = 'nodes', $root = 0, $strict = true);
+
+    // 转换成树状列表
+    $data_list = json_encode($data_list);
+?>

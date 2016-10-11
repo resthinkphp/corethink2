@@ -1,0 +1,168 @@
+<extend name="$_home_public_layout"/>
+
+<block name="style">
+    <style position="page" type="text/css" media="screen">
+    </style>
+</block>
+
+<block name="main">
+    <?php
+        // 获取用户信息
+        $user_info = D('Admin/User')->getUserInfo(is_login());
+
+        // 获取所有模块配置的用户导航
+        $mod_con['status'] = 1;
+        $_user_nav_center = array();
+        $_module_list = D('Admin/Module')->where($mod_con)->order('sort asc, id asc')->select();
+        foreach ($_module_list as $key => $val) {
+            if ($val['user_nav']) {
+                $user_nav = json_decode($val['user_nav'], true);
+                foreach ($user_nav['center'] as $k => &$v) {
+                    if ($v['badge']) {
+                        $v['badge'][0] = D($v['badge'][0]);
+                        $v['badge_count'] = call_user_func($v['badge']);
+                        unset($v['badge']);
+                    }
+                    // 在Wap隐藏的导航
+                    if ($v['hide_wap']) {
+                        unset($user_nav['center'][$k]);
+                    }
+                }
+                $_nav_center['top']   = $user_nav['top']['center'];
+                $_nav_center['title'] = $user_nav['title']['center'] ? : $val['title'];
+                $_nav_center['nav']   = $user_nav['center'];
+                $_user_nav_center[$val['name']] = $_nav_center;
+            }
+        }
+
+        // 如果模块顶级导航配置了top字段则移动菜单至top所指的模块下边
+        foreach ($_user_nav_center as $key => &$value) {
+            if ($value['top']) {
+                if ($_user_nav_center[$value['top']]['nav']) {
+                    $_user_nav_center[$value['top']]['nav'] = array_merge($_user_nav_center[$value['top']]['nav'], $value['nav']);
+                    unset($_user_nav_center[$key]);
+                }
+                
+            }
+        }
+    ?>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+            </div>
+            <div class="center">
+                <?php if($user_info['cert_info']): ?>
+                    {$user_info['cert_info']['cert_title']}
+                <?php else: ?>
+                    {$meta_title}
+                <?php endif; ?>
+            </div>
+            <div class="right"></div>
+        </div>
+    </div>
+
+    <div class="page {$_page_name}" data-page="{$_page_name}">
+        <div class="page-content">
+            <div class="list-block" style="margin-top: -1px;margin-bottom: 0px;">
+                <div class="ucenter-bg text-center bg-opencmf" style="z-index: 999;padding: 25px 15px;">
+                    <?php if($user_info): ?>
+                        <div class="avatar">
+                            <img src="{$_user_auth.avatar_url}" style="border-radius: 50%;" width="80">
+                        </div>
+                        <div>
+                            <present name="_user_auth.vip">
+                                <span class="ocicon fa-vip{$_user_auth.vip.type_info.level}" style="color: red;font-size: 23px;"></span>
+                            </present>
+                            <span>{$user_info.nickname}</span>
+                            <span>{$user_info.gender_icon}</span>
+                        </div>
+                        <div>
+                            {$user_info.summary|default='什么也没写'}
+                        </div>
+                    <?php else: ?>
+                        <a href="{:U('User/User/login')}" class="button button-fill color-orange" style="margin: 20px auto;width:100px">登陆／注册</a>
+                    <?php endif; ?>
+                </div>
+                <ul style="margin-top: -1px;">
+                    <li>
+                        <a href="{:U('Wallet/Index/index', '', true, true)}" class="item-link item-content" data-ignore-cache="true">
+                            <div class="item-media text-center bg-opencmf" style="width: 28px;height: 28px;padding: 7px 6px;border-radius: 6px;">
+                                <span class="ocicon fa-wallet color-white" style="font-size: 20px;"></span>
+                            </div>
+                            <div class="item-inner" style="padding-top: 18px;padding-bottom: 17px;">
+                                <div class="item-title">我的钱包</div>
+                                <div class="item-after">¥ {$user_info.money|default='0.00'}</div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <div class="text-center" style="margin-top: -1px;background: #fff;padding: 6px 10px;">
+                    <div class="row">
+                        <div class="col-auto">
+                            <div>积分</div>
+                            <div style="color: #8e8e93;">{$user_info.score|default='0'}</div>
+                        </div>
+                        <div class="col-auto">
+                            <div>粉丝</div>
+                            <div style="color: #8e8e93;">{$user_info.fans_count|default='0'}</div>
+                        </div>
+                        <div class="col-auto">
+                            <div>关注</div>
+                            <div style="color: #8e8e93;">{$user_info.follow_count|default='0'}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <volist name="_user_nav_center" id="_center" key="fkey">
+                <div class="list-block" style="margin: 15px 0;">
+                    <notempty name="_center.nav">
+                        <ul>
+                            <volist name="_center.nav" id="_nav" key="skey">
+                                <li>
+                                    <a href="{:U($_nav['url'], '', true, true)}" class="item-link item-content" data-ignore-cache="true">
+                                        <div class="item-media text-center" style="width: 28px;height: 28px;padding: 7px 6px;background: {$_nav['color']};border-radius: 6px;">
+                                            <span class="fa {$_nav.icon} color-white" style="width: 16px;height: 16px;font-size: 16px;"></span>
+                                        </div>
+                                        <div class="item-inner">
+                                            <div class="item-title">{$_nav.title}</div>
+                                            <notempty name="_nav.badge_count">
+                                                <div class="item-after"><span class="badge {$_nav['badge_color']}">{$_nav['badge_count']}</span></div>
+                                            </notempty>
+                                        </div>
+                                    </a>
+                                </li>
+                            </volist>
+                        </ul>
+                    </notempty>
+                </div>
+                
+            </volist>
+
+            <div class="list-block" style="margin: 15px 0;">
+                <ul>
+                    <li>
+                        <a href="{:U('Home/Index/nav', array('group' => 'wap_bottom'), true, true)}" class="item-link item-content" data-ignore-cache="true">
+                            <div class="item-media text-center" style="width: 28px;height: 28px;padding: 7px 6px;background: #3fa9f5;border-radius: 6px;">
+                                <span class="fa fa-map-signs color-white" style="width: 16px;height: 16px;font-size: 16px;"></span>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">关于我们</div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <?php if($user_info): ?>
+                <div class="list-block">
+                    <ul>
+                        <li>
+                            <a href="{:U('User/User/logout')}" class="item-link list-button color-red ajax-get">退出登录</a>
+                        </li>
+                    </ul>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</block>

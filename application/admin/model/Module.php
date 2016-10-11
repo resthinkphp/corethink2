@@ -61,7 +61,7 @@ class Module extends Model {
     public function getAdminMenu($module_name = MODULE_NAME) {
         // 获取模块左侧导航
         $where['name'] = $module_name;
-        $module_info = $this->where($where)->find();
+        $module_info = $this->where($where)->find()->toArray();
         $_side_menu_list = json_decode($module_info['admin_menu'], true);
 
         // 转换成树结构

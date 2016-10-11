@@ -1,0 +1,103 @@
+<extend name="$_home_public_layout"/>
+
+<block name="style">
+    <style type="text/css" media="screen">
+        .media .fa {
+            width: 60px;
+            height: 60px;
+            font-size: 40px;
+            padding: 10px;
+        }
+        .media .fa-envelope-o {
+            font-size: 30px;
+        }
+    </style>
+</block>
+
+<block name="breadcrumb">
+    <include file="$_user_center_info" />
+</block>
+
+<block name="main">
+    <div class="container">
+        <div class="row ucenter-row">
+            <div class="col-xs-12 col-md-3">
+                <include file="$_user_center_side" /><!-- 包含用户中心侧边导航 -->
+            </div>
+            <div class="col-xs-12 col-md-9">
+                <div class="panel">
+                    <div class="panel">
+                        <?php
+                            $allow_reg_type = C('user_config.allow_reg_type');
+                        ?>
+                        <div class="panel-body">
+                            <ul class="nav-tabs nav">
+                                <?php if(in_array('email', $allow_reg_type)): ?>
+                                    <li data-tab="bind1" class="active"><a href="#bind1" data-toggle="tab">绑定邮箱</a></li>
+                                <?php endif; ?>
+                                <?php if(in_array('mobile', $allow_reg_type)): ?>
+                                    <li data-tab="bind2"><a href="#bind2" data-toggle="tab">绑定手机</a></li>
+                                <?php endif; ?>
+                            </ul>
+                            <div class="form-group"></div>
+                            <div class="tab-content">
+                                <?php if(in_array('email', $allow_reg_type)): ?>
+                                    <div id="bind1" class='tab-pane active'>
+                                        <form action="{:U('User/Safety/bind')}" method="post" class="form bind-form-email">
+                                            <fieldset>
+                                                <div class="blank"></div>
+                                                <div class="form-group">
+                                                    <div class="control">
+                                                        <input type="text" class="form-control input-lg" name="email" placeholder="请输入邮箱">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control input-lg" name="verify" placeholder="请输入验证码">
+                                                        <span class="input-group-btn">
+                                                            <button type="button" class="btn btn-lg btn-default send-mail-verify" data-title="邮箱绑定">发送邮件验证码</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="hidden" name="bind_type" value="email">
+                                                    <button class="btn btn-primary-outline btn-lg btn-block ajax-post" type="submit" target-form="bind-form-email">确认绑定</button>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if(in_array('mobile', $allow_reg_type)): ?>
+                                    <div id="bind2" class='tab-pane'>
+                                        <form action="{:U('User/Safety/bind')}" method="post" class="form bind-form-mobile">
+                                           <fieldset>
+                                                <div class="blank"></div>
+                                                <div class="form-group">
+                                                    <div class="control">
+                                                        <input type="text" class="form-control input-lg" name="mobile" placeholder="请输入手机号">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control input-lg" name="verify" placeholder="请输入验证码">
+                                                        <span class="input-group-btn">
+                                                            <button type="button" class="btn btn-default btn-lg send-mobile-verify" data-title="手机绑定">发送短信验证码</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="hidden" name="bind_type" value="mobile">
+                                                    <button class="btn btn-primary-outline btn-lg btn-block ajax-post"  type="submit" target-form="bind-form-mobile">确认绑定</button>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

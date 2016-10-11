@@ -273,7 +273,7 @@ class Upload extends Model {
         $con['md5']  = md5_file($reay_file['tmp_name']);
         $con['sha1'] = sha1_file($reay_file['tmp_name']);
         $con['size'] = $reay_file['size'];
-        $upload = $this->where($con)->find();
+        $upload = $this->where($con)->find()->toArray();
         if ($upload) {  // 发现相同文件直接返回
             $return['id']   = $upload['id'];
             $return['name'] = $upload['name'];

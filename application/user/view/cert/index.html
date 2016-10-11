@@ -1,0 +1,34 @@
+<extend name="$_home_public_layout"/>
+
+<block name="breadcrumb">
+    <include file="$_user_center_info" />
+</block>
+
+<block name="main">
+    <div class="container">
+        <div class="row ucenter-row">
+            <div class="col-xs-12 col-md-3">
+                <include file="$_user_center_side" /><!-- 包含用户中心侧边导航 -->
+            </div>
+            <div class="col-xs-12 col-md-9">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        实名认证
+                    </div>
+                    <div class="panel-body">
+                        <div>认证类型：{$cert_info.type_title}</div>
+                        <div>证件类型：{$cert_info.cert_type_title}</div>
+                        <div>证件号码：{$cert_info.cert_no}</div>
+                        <div>真实名称：{$cert_info.cert_title}</div>
+                        <div>证件照片：<img src="{$cert_info.cert_photo_url}" width="120"></div>
+                        <?php if($cert_info['status'] === '1'): ?>
+                            <div class="m-t alert alert-seccess">审核通过</div>
+                        <?php else: ?>
+                            <div class="m-t alert alert-warning"><a href="{:U('User/Cert/edit')}">等待审核，点击修改信息</a></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

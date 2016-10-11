@@ -48,7 +48,7 @@ class Module extends Admin {
         if (is_array($dependences)) {
             foreach ($dependences as $key => $val) {
                 $con['name'] = $key;
-                $module_info = D('Module')->where($con)->find();
+                $module_info = D('Module')->where($con)->find()->toArray();
                 if (!$module_info) {
                     $this->error('该模块依赖'.$key.'模块');
                 }

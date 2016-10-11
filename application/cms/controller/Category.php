@@ -1,0 +1,58 @@
+<?php
+// +----------------------------------------------------------------------
+// | 零云 [ 简单 高效 卓越 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2016 http://www.lingyun.net All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: jry <598821125@qq.com>
+// +----------------------------------------------------------------------
+namespace app\cms\controller;
+use app\home\controller\Home;
+use common\util\think\Page;
+/**
+ * 分类控制器
+ * @author jry <598821125@qq.com>
+ */
+class Category extends Home {
+    /**
+     * 分类列表
+     * @author jry <598821125@qq.com>
+     */
+    public function index($group = 1) {
+        // 获取所有分类
+        $map['status'] = array('eq', '1');  // 禁用和正常状态
+        if (I('get.pid')) {
+            $map['pid'] = array('eq', I('get.pid'));  // 父分类ID
+        }
+        $map['group'] = array('eq', $group);
+        $data_list = D('Category')->field('id,pid,group,doc_type,title,url,icon,create_time,sort,status')
+                                  ->where($map)->order('sort asc,id asc')->select();
+
+        // 转换成树状列表
+        $tree = new \Common\Util\Tree();
+        $category_list = $tree->list_to_tree($data_list);
+
+        $this->success('分类列表', ''. array('data' => $category_list));
+    }
+
+    /**
+     * 分类详情
+     * @author jry <598821125@qq.com>
+     */
+    public function detail($id) {
+        $map['status'] = array('egt', 1);  // 正常、隐藏两种状态是可以访问的
+        $info = D('Category')->where($map)->find($id);
+        if(!$info){
+            $this->error('您访问的分类已禁用或不存在');
+        }
+        if ($info['detail_template']) {
+            $template = 'Index/'. $info['detail_template'];
+        } else {
+            $template = 'Index/detail_cate';
+        }
+        $this->assign('info', $info);
+        $this->assign('__current_category__', $info['id']);
+        $this->assign('meta_title', $info['title']);
+        $this->display($template);
+    }
+}

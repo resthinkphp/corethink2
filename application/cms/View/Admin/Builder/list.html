@@ -1,0 +1,51 @@
+<extend name="$_admin_public_layout"/>
+
+<block name="style">
+    <link rel="stylesheet" type="text/css" href="__LYUI__/css/cui.extend.min.css">
+    <include file="./application/common/builder/style.html" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/libs/bootstrap-treeview/css/bootstrap-treeview.min.css">
+    <style type="text/css">
+        #cate-list li a:hover {
+            text-decoration: none;
+        }
+        .col-sm-2 {
+            width: 18%;
+            padding: 0;
+        }
+        .col-sm-10 {
+            width: 82%;
+        }
+    </style>
+</block>
+
+<block name="main">
+    <div class="panel-body">
+        <div class="col-xs-12 col-sm-2">
+            <include file="builder/tree" />
+        </div>
+        <div class="col-xs-12 col-sm-10">
+            <include file="$_listbuilder_layout" builderpath="./application/common/builder" />
+        </div>
+    </div>
+</block>
+
+<block name="script">
+    <script type="text/javascript" src="__LYUI__/js/cui.extend.min.js"></script>
+    <include file="./application/common/builder/javascript.html" />
+    <script type="text/javascript" src="__PUBLIC__/libs/bootstrap-treeview/js/bootstrap-treeview.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        $(function(){
+            $('#cate-list').treeview({
+                data: {$data_list},
+                showBorder: false,
+                enableLinks: true,
+                selectedBackColor: '#3fa9f5',
+                //expandIcon: 'fa fa-angle-right',
+                //collapseIcon: 'fa fa-angle-down',
+                emptyIcon: '',
+                nodeIcon: '',
+                selectedIcon: '',
+            });
+        });
+    </script>
+</block>

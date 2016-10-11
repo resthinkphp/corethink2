@@ -1,0 +1,72 @@
+<extend name="$_home_public_layout"/>
+
+<block name="breadcrumb">
+    <include file="$_user_center_info" />
+</block>
+
+<block name="main">
+    <div class="container">
+        <div class="row ucenter-row">
+            <div class="col-xs-12 col-md-3">
+                <include file="$_user_center_side" /><!-- 包含用户中心侧边导航 -->
+            </div>
+            <div class="col-xs-12 col-md-9">
+                <div class="panel">
+                    <div class="panel-body">
+                        <ul class="nav-pills nav">
+                            <li class="<php>if($_GET['type'] !== '2') echo 'active';</php>">
+                                <a href="{:U('', array('type' => 1))}">我关注的人</a>
+                            </li>
+                            <li class="<php>if($_GET['type'] === '2') echo 'active';</php>">
+                                <a href="{:U('', array('type' => 2))}">我的粉丝</a>
+                            </li>
+                        </ul>
+                        <div class="form-group"></div>
+                        <div class="tab-content">
+                            <table class="table  table-responsive table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>UID</th>
+                                        <th>头像</th>
+                                        <th>昵称</th>
+                                        <th>时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <volist name="data_list" id="vo">
+                                        <tr>
+                                            <td>{$vo['user']['id']}</td>
+                                            <td>
+                                                <a target="_blank" href="{:U('User/Index/home', array('uid' => $vo['user']['id']))}">
+                                                    <img style="widht:40px;height:40px;" src="{$vo.user.cover|get_cover='avatar'}">
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a target="_blank" href="{:U('User/Index/home', array('uid' => $vo['user']['id']))}">
+                                                    {$vo.user.nickname}
+                                                </a>
+                                            </td>
+                                            <td>{$vo.create_time|time_format}</td>
+                                            <td>
+                                                <a href="{:U('User/Talk/index', array('to_uid' => $vo['user']['id']))}" class="label label-info">发私信</a>
+                                                <php>if($_GET['type'] === '2'):</php>
+                                                    <a href="{:U('User/Follow/add', array('uid' => $vo['user']['id']))}" class="label label-primary ajax-get">关注Ta</a>
+                                                <php>else:</php>
+                                                    <a href="{:U('User/Follow/add', array('uid' => $vo['user']['id']))}" class="label label-danger ajax-get">取消关注</a>
+                                                <php>endif;</php>
+                                            </td>
+                                        </tr>
+                                    </volist>
+                                </tbody>
+                            </table>
+                            <notempty name="page">
+                                <ul class="pagination">{$page}</ul>
+                            </notempty>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

@@ -13,9 +13,10 @@ return [
     '__pattern__' => [
         'name' => '\w+',
     ],
-    '[hello]'     => [
-        ':id'   => ['index/hello', ['method' => 'get'], ['id' => '\d+']],
-        ':name' => ['index/hello', ['method' => 'post']],
-    ],
+
+    // home模块路由
+    'page/:id'   => ['home/nav/page', ['method' => 'get'], ['id' => '\d+']],
+    'lists/:cid'   => ['home/nav/lists', ['method' => 'get'], ['cid' => '\d+']],
+    'post/:id'   => ['home/nav/post', ['method' => 'get'], ['id' => '\d+']],
 
 ];

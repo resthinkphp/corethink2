@@ -79,7 +79,7 @@ class Home extends Common {
                 if (IS_AJAX) {
                     $con['status'] = 1;
                     $con['level']  = $level;
-                    $need_vip_info = D('Vip/Type')->where($con)->find();
+                    $need_vip_info = D('Vip/Type')->where($con)->find()->toArray();
                     $this->error('请先开通' . $need_vip_info['title'] . 'VIP', U('Vip/Index/index', '', true, true));
                 } else {
                     redirect(U('Vip/Index/index', '', true, true));

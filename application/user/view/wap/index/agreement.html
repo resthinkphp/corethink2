@@ -1,0 +1,30 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="{:U('User/Center/index')}" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">用户协议</div>
+            <div class="right">
+                <a href="__ROOT__/" class="link back">
+                    <span>同意</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar {$_page_name}" data-page="{$_page_name}">
+        <div class="page-content">
+            <div class="content-block no-margin">
+                <div class="content-block-inner">
+                    <p>{:C('user_config.user_protocol')}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

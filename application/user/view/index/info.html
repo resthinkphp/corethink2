@@ -1,0 +1,39 @@
+<div class="">
+    <?php
+        // 获取用户信息
+        $user_info = D('User/User')->detail(is_login());
+    ?>
+    <div class="panel panel-default row"  style="border-top: 0;">
+        <div class="panel-body container">
+            <div class="col-xs-4 col-sm-2">
+                <div style="width: 60%;border:5px solid #fff;box-shadow: 0px 0px 2px #aaa;border-radius: 50%;box-sizing: border-box;">
+                    <a href="{:U('User/Center/avatar', '', true, true)}">
+                        <img class="img-responsive img-circle" src="{$user_info.avatar|get_cover='avatar'}">
+                    </a>
+                </div>
+            </div>
+            <div class="col-xs-8 col-sm-5">
+                <h4>
+                    {$user_info.nickname}
+                    <?php if($user_info['cert_info']): ?>
+                        <span class="badge badge-success badge-vip">{$user_info['cert_info']['cert_title']}</span>
+                    <?php else: ?>
+                        <a class="badge badge-warning badge-vip" href="{:U('User/Cert/add', '', true, true)}">未实名认证</a>
+                    <?php endif; ?>
+                    <span class="badge badge-danger badge-vip">{$_user_auth.vip.type_info.title}</span>
+                </h4>
+                <div>
+                    <p>粉丝：{$user_info.fans_count|default='0'} ｜ 关注：{$user_info.follow_count|default='0'}</p>
+                    <p>个性签名：{$user_info.summary|default="这个人太懒，什么也没写！"}</p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-5">
+                <p style="margin-top: 38px;">积分：{$user_info.score|default=0}</p>
+                <p>
+                    余额：¥{$user_info.money|default=0.00}
+                    <a target="_blank" class="label label-danger" href="{:U('Wallet/Recharge/index', '', true, true)}" title="点击充值">点击充值</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

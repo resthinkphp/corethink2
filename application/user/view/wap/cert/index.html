@@ -1,0 +1,82 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="{:U('User/Safety/index', '', true, true)}" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$meta_title}</div>
+            <div class="right"></div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar {$_page_name}" data-page="{$_page_name}">
+        <div class="page-content">
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">证件类型</div>
+                                <div class="item-after">{$cert_info.type_title}</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">证件类型</div>
+                                <div class="item-after">{$cert_info.cert_type_title}</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">证件号码</div>
+                                <div class="item-after">{$cert_info.cert_no}</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">真实名称</div>
+                                <div class="item-after">{$cert_info.cert_title}</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">证件照片</div>
+                                <div class="item-after"><img src="{$cert_info.cert_photo_url}" width="120"></div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <?php if($cert_info['status'] === '1'): ?>
+                <div class="content-block">
+                    <p>
+                        <a href="#" class="button button-big button-fill bg-green">
+                            <i class="fa fa-check"></i> 审核通过
+                        </a>
+                    </p>
+                </div>
+            <?php else: ?>
+                <div class="content-block">
+                    <p>
+                        <a href="{:U('User/Cert/edit')}" class="button button-big button-fill bg-yellow">
+                            <i class="fa fa-info-circle"></i> 等待审核，点击修改信息
+                        </a>
+                    </p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</block>

@@ -30,7 +30,7 @@ class Nav extends Home {
         $nav_object = D('Admin/Nav');
         $con['id']     = $id;
         $con['status'] = 1;
-        $info = $nav_object->where($con)->find();
+        $info = $nav_object->where($con)->find()->toArray();
 
         $this->assign('info', $info);
         $this->assign('meta_title', $info['title']);
@@ -45,7 +45,7 @@ class Nav extends Home {
         $nav_object = D('Admin/Nav');
         $con['id']     = $cid;
         $con['status'] = 1;
-        $info = $nav_object->where($con)->find();
+        $info = $nav_object->where($con)->find()->toArray();
 
         // 文章列表
         $map['status'] = 1;
@@ -76,7 +76,7 @@ class Nav extends Home {
         $post_object = D('Admin/Post');
         $con['id']     = $id;
         $con['status'] = 1;
-        $info = $post_object->where($con)->find();
+        $info = $post_object->where($con)->find()->toArray();
 
         // 阅读量加1
         $result = $post_object->where(array('id' => $id))->SetInc('view_count');

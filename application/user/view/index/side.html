@@ -1,0 +1,70 @@
+<div class="user-center-nav">
+    <?php
+        // 获取用户信息
+        $user_info = D('User/User')->detail(is_login());
+
+        // 获取所有模块配置的用户导航
+        $mod_con['status'] = 1;
+        $_user_nav_center = array();
+        $_module_list = D('Admin/Module')->where($mod_con)->order('sort asc, id asc')->select();
+        foreach ($_module_list as $key => $val) {
+            if ($val['user_nav']) {
+                $user_nav = json_decode($val['user_nav'], true);
+                foreach ($user_nav['center'] as $k => &$v) {
+                    if ($v['badge']) {
+                        $v['badge'][0] = D($v['badge'][0]);
+                        $v['badge_count'] = call_user_func($v['badge']);
+                        unset($v['badge']);
+                    }
+                }
+                $_nav_center['top']   = $user_nav['top']['center'];
+                $_nav_center['name']  = $val['name'];
+                $_nav_center['title'] = $user_nav['title']['center'] ? : $val['title'];
+                $_nav_center['icon']  = $val['icon'];
+                $_nav_center['nav']   = $user_nav['center'];
+                $_nav_center['icon_color']  = $val['icon_color'];
+                $_user_nav_center[$val['name']] = $_nav_center;
+            }
+        }
+
+        // 如果模块顶级导航配置了top字段则移动菜单至top所指的模块下边
+        foreach ($_user_nav_center as $key => &$value) {
+            if ($value['top']) {
+                if ($_user_nav_center[$value['top']]['nav']) {
+                    $_user_nav_center[$value['top']]['nav'] = array_merge($_user_nav_center[$value['top']]['nav'], $value['nav']);
+                    unset($_user_nav_center[$key]);
+                }
+            }
+        }
+    ?>
+
+    <!-- 侧边导航 -->
+    <nav class="navside navside-default" role="navigation" style="margin-top: -6px;">
+        <ul class="nav navside-nav navside-first">
+            <volist name="_user_nav_center" id="_center" key="fkey">
+                <li>
+                    <a data-toggle="collapse" href="#navside-{$_center.id}-{$fkey}">
+                        <i class="{$_center.icon}" style="color: {$_center.icon_color}"></i>
+                        <span class="nav-label m-l-sm">{$_center.title}模块</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <notempty name="_center.nav">
+                        <ul class="nav navside-nav navside-second collapse <?php if(MODULE_NAME === $_center['name']) {echo 'in';} ?>" id="navside-{$lk.id}-{$fkey}">
+                            <volist name="_center.nav" id="_nav" key="skey">
+                                <li>
+                                    <a href="{:U($_nav['url'], '', true, true)}" class="open-tab" tab-name="navside-{$_ns.id}-{$fkey}-{$skey}">
+                                        <i class="fa {$_nav.icon}"></i>
+                                        <span class="nav-label">{$_nav.title}</span>
+                                        <notempty name="_nav.badge_count">
+                                            <span class="badge {$_nav.badge_class}">{$_nav['badge_count']}</span>
+                                        </notempty>
+                                    </a>
+                                </li>
+                            </volist>
+                        </ul>
+                    </notempty>
+                </li>
+            </volist>
+        </ul>
+    </nav>
+</div>

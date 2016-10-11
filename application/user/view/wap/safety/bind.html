@@ -1,0 +1,106 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="{:U('User/Center/index')}" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$meta_title}</div>
+            <div class="right"></div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar {$_page_name}" data-page="{$_page_name}">
+        <div class="page-content">
+            <?php
+                $allow_reg_type = C('user_config.allow_reg_type');
+            ?>
+            <div class="content-block">
+                <div class="buttons-row">
+                    <?php if(in_array('email', $allow_reg_type)): ?>
+                        <a href="#bind1" class="tab-link button active">绑定邮箱</a>
+                    <?php endif; ?>
+                    <?php if(in_array('mobile', $allow_reg_type)): ?>
+                        <a href="#bind2" class="tab-link button">绑定手机</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="tabs">
+                <?php if(in_array('email', $allow_reg_type)): ?>
+                    <div id="bind1" class="tab active">
+                        <form action="{:U('User/Safety/bind')}" method="post" class="form bind-form-email">
+                            <div class="list-block">
+                                <ul>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-input">
+                                                    <input type="text" name="email" placeholder="请输入邮箱">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-input">
+                                                    <input type="password" name="verify" placeholder="请输入验证码">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li><a href="#" class="item-link list-button send-mail-verify" data-title="邮箱绑定">发送邮件验证码</a></li>
+                                </ul>
+                            </div>
+                            <div class="list-block">
+                                <input type="hidden" name="bind_type" value="email">
+                                <ul>
+                                    <li><a href="#" type="submit" class="submit item-link list-button ajax-post" target-form="bind-form-email">确认绑定</a></li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                <?php endif; ?>
+                <?php if(in_array('mobile', $allow_reg_type)): ?>
+                    <div id="bind2" class="tab">
+                        <form action="{:U('User/Safety/bind')}" method="post" class="form bind-form-mobile">
+                            <div class="list-block">
+                                <ul>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-input">
+                                                    <input type="text" name="mobile" placeholder="请输入手机号">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-input">
+                                                    <input type="password" name="verify" placeholder="请输入验证码">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li><a href="#" class="item-link list-button send-mobile-verify" data-title="手机绑定">发送手机验证码</a></li>
+                                </ul>
+                            </div>
+                            <div class="list-block">
+                                <input type="hidden" name="bind_type" value="mobile">
+                                <ul>
+                                    <li><a href="#" type="submit" class="submit item-link list-button ajax-post" target-form="bind-form-mobile">确认绑定</a></li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</block>

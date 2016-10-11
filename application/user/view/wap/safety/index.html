@@ -1,0 +1,103 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="{:U('User/Center/index')}" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$meta_title}</div>
+            <div class="right"></div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar {$_page_name}" data-page="{$_page_name}">
+        <div class="page-content">
+            <div class="list-block">
+                <?php
+                    $allow_reg_type = C('user_config.allow_reg_type');
+                ?>
+                <ul>
+                    <?php if(in_array('email', $allow_reg_type)): ?>
+                        <?php if ($user_info['email_bind']) : ?>
+                            <li class="swipeout">
+                                <div class="swipeout-content item-content">
+                                    <div class="item-media"><i class="fa fa-envelope-o"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{$user_info.email}</div>
+                                        <div class="item-after"><span class="color-green">已绑定</span></div>
+                                    </div>
+                                </div>
+                                <div class="swipeout-actions-right">
+                                    <a class="link bg-blue" href="{:U('User/Safety/bind', '', true, true)}">重新绑定</a>
+                                    <a class="link ajax-get confirm bg-red" href="{:U('User/Safety/cancel', array('bind_type' => 'email'), true, true)}">取消绑定</a>
+                                </div>
+                            </li>
+                        <?php else: ?>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media"><i class="fa fa-envelope-o"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title color-red">邮箱未绑定</div>
+                                        <div class="item-after">
+                                            <a class="link" href="{:U('User/Safety/bind', '', true, true)}">立即绑定</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <?php if(in_array('mobile', $allow_reg_type)): ?>
+                        <?php if ($user_info['mobile_bind']) : ?>
+                            <li class="swipeout">
+                                <div class="swipeout-content item-content">
+                                    <div class="item-media"><i class="fa fa-mobile"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{$user_info.mobile}</div>
+                                        <div class="item-after"><span class="color-green">已绑定</span></div>
+                                    </div>
+                                </div>
+                                <div class="swipeout-actions-right">
+                                    <a class="label label-primary" href="{:U('User/Safety/bind', '', true, true)}">重新绑定</a>
+                                    <a class="label label-danger ajax-get confirm" href="{:U('User/Safety/cancel', array('bind_type' => 'mobile'), true, true)}">取消绑定</a>
+                                </div>
+                            </li>
+                        <?php else: ?>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media"><i class="fa fa-mobile"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title color-red">手机号未绑定 {$user_info.mobile}</div>
+                                        <div class="item-after">
+                                            <a class="link" href="{:U('User/Safety/bind', '', true, true)}">立即绑定</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <li>
+                        <a class="item-link item-content" href="{:U('User/Safety/password', '', true, true)}">
+                            <div class="item-media"><i class="fa fa-key"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">修改密码</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="item-link item-content" href="{:U('User/Cert/index', '', true, true)}">
+                            <div class="item-media"><i class="fa fa-user"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">实名认证</div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <div class="list-block-label">为了您的账户安全，请务必绑定邮箱和手机</div>
+            </div>
+        </div>
+    </div>
+</block>

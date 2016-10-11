@@ -1,0 +1,26 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="{:U('/cms')}" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$info.main_field}</div>
+            <div class="right"></div>
+        </div>
+    </div>
+
+    <div class="page" data-page="{$_page_name}">
+        <div class="page-content">
+            <div class="content-block no-margin">
+                <div class="content-block-inner">
+                    {$info.content|parse_content}
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

@@ -1,0 +1,90 @@
+<extend name="$_home_public_layout"/>
+
+<block name="main">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="{:U('User/Index/index')}" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>返回</span>
+                </a>
+            </div>
+            <div class="center">{$meta_title}</div>
+            <div class="right"></div>
+        </div>
+    </div>
+
+    <div class="page no-toolbar {$_page_name}" data-page="{$_page_name}">
+        <div class="page-content">
+            <div class="list-block media-list">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media">
+                                <img src="{$user_info.avatar|get_cover='avatar'}" width="80" style="border-radius: 4px;">
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title">
+                                        {$user_info.nickname}
+                                        {$user_info.gender_icon}
+                                    </div>
+                                </div>
+                                <div class="item-subtitle"></div>
+                                <div class="item-text" style="height: auto">
+                                    用户名：{$user_info.username}<br>
+                                    签名：{$user_info.summary|default="什么也没写"}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">积分</div>
+                                <div class="item-input">
+                                    <input type="text" disabled="disabled" value="{$user_info.score}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">邮箱</div>
+                                <div class="item-input">
+                                    <input type="text" disabled="disabled" value="{$user_info.email|default='邮箱尚未验证'}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">注册时间</div>
+                                <div class="item-input">
+                                    <input type="text" disabled="disabled" value="{$user_info.create_time|time_format}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-block">
+                <p><a href="{:U('User/Talk/index', array('to_uid' => $user_info['id']))}" class="button button-big active">发消息</a></p>
+                <?php if ($user_info['follow_status']) :?>
+                    <p><a href="#" class="button button-big"><i class="fa fa-check"></i> 已关注</a></p>
+                <?php else :?>
+                    <p><a href="{:U('User/Follow/add', array('uid' => $user_info['id']))}" class="button button-big ajax-get">加关注</a></p>
+                <?php endif; ?>
+                
+            </div>
+        </div>
+    </div>
+</block>

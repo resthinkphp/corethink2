@@ -1,0 +1,93 @@
+<extend name="$_home_public_layout"/>
+
+<block name="style">
+    <style type="text/css" media="screen">
+        .media .fa {
+            width: 60px;
+            height: 60px;
+            font-size: 40px;
+            padding: 10px;
+        }
+        .media .fa-envelope-o {
+            font-size: 30px;
+        }
+    </style>
+</block>
+
+<block name="breadcrumb">
+    <include file="$_user_center_info" />
+</block>
+
+<block name="main">
+    <div class="container">
+        <div class="row ucenter-row">
+            <div class="col-xs-12 col-md-3">
+                <include file="$_user_center_side" /><!-- 包含用户中心侧边导航 -->
+            </div>
+            <div class="col-xs-12 col-md-9">
+                <div class="panel">
+                    <div class="panel-heading">
+                        帐号安全
+                    </div>
+                    <div class="panel-body">
+                        <?php
+                            $allow_reg_type = C('user_config.allow_reg_type');
+                        ?>
+                        <?php if(in_array('email', $allow_reg_type)): ?>
+                            <div class="media">
+                                <div class="media-left">
+                                    <span class="fa fa-envelope-o text-center bg-primary"></span>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">邮箱绑定</h4>
+                                    <?php if ($user_info['email_bind']) : ?>
+                                        <span class="label label-success">已绑定：{$user_info.email}</span>
+                                        <a class="label label-primary" href="{:U('User/Safety/bind', '', true, true)}">重新绑定</a>
+                                        <a class="label label-danger ajax-get confirm" href="{:U('User/Safety/cancel', array('bind_type' => 'email'), true, true)}">取消绑定</a>
+                                    <?php else: ?>
+                                        <a class="label label-danger" href="{:U('User/Safety/bind', '', true, true)}">未绑定</a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <?php if(in_array('mobile', $allow_reg_type)): ?>
+                            <div class="media">
+                                <div class="media-left">
+                                    <span class="fa fa-mobile text-center bg-primary"></span>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">手机号绑定</h4>
+                                    <?php if ($user_info['mobile_bind']) : ?>
+                                        <span class="label label-success">已绑定：{$user_info.mobile}</span>
+                                        <a class="label label-primary" href="{:U('User/Safety/bind', '', true, true)}">重新绑定</a>
+                                        <a class="label label-danger ajax-get confirm" href="{:U('User/Safety/cancel', array('bind_type' => 'mobile'), true, true)}">取消绑定</a>
+                                    <?php else: ?>
+                                        <a class="label label-danger" href="{:U('User/Safety/bind', '', true, true)}">未绑定</a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <div class="media">
+                            <div class="media-left">
+                                <span class="fa fa-key text-center bg-primary"></span>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">修改密码</h4>
+                                <a class="label label-danger" href="{:U('User/Safety/password', '', true, true)}">点击修改密码</a>
+                            </div>
+                        </div>
+                        <div class="media">
+                            <div class="media-left">
+                                <span class="fa fa-user text-center bg-primary"></span>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">实名认证</h4>
+                                <a class="label label-warning" href="{:U('User/Cert/index', '', true, true)}">实名认证</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>

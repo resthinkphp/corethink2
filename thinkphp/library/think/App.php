@@ -314,7 +314,6 @@ class App
             $result = explode('/', $result);
         }
         $request = Request::instance();
-
         if ($config['app_multi_module']) {
             // 多模块部署
             $module    = strip_tags(strtolower($result[0] ?: $config['default_module']));

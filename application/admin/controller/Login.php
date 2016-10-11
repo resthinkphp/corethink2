@@ -38,7 +38,7 @@ class Login extends Common {
             // 验证管理员表里是否有该用户
             $account_object = D('Admin/Access');
             $where['uid'] = $user_info['id'];
-            $account_info = $account_object->where($where)->find();
+            $account_info = $account_object->where($where)->find()->toArray();
             if (!$account_info) {
                 $this->error('该用户没有管理员权限'.$account_object->getError());
             }

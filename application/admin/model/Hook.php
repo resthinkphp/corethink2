@@ -51,7 +51,7 @@ class Hook extends Model {
     */
     public function existHook($name, $data){
         $where['name'] = $name;
-        $gethook = $this->where($where)->find();
+        $gethook = $this->where($where)->find()->toArray();
         if (!$gethook || empty($gethook) || !is_array($gethook)) {
             $data['name'] = $name;
             $data['description'] = $data['description'];
